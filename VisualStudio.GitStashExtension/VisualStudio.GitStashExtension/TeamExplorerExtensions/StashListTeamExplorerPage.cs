@@ -1,16 +1,19 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.Composition;
 using Microsoft.TeamFoundation.Controls;
+using Microsoft.VisualStudio.Shell;
 using VisualStudio.GitStashExtension.VS.UI;
 
 namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
 {
     [TeamExplorerPage(Constants.StashPageId)]
-    public class StashTeamExplorerPage: ITeamExplorerPage
+    public class StashListTeamExplorerPage : ITeamExplorerPage
     {
-        public StashTeamExplorerPage()
+        [ImportingConstructor]
+        public StashListTeamExplorerPage([Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider)
         {
-            PageContent = new StashTeamExplorerPageUI();
+            PageContent = new StashListTeamExplorerPageUI(serviceProvider);
         }
 
         public void Dispose()

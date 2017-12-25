@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="VisualStudio.GitStashExtension.VS.UI.StashListTeamExplorerPageUI"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VisualStudio.GitStashExtension.VS.UI"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch"
+             HorizontalContentAlignment="Stretch"
+             VerticalContentAlignment="Stretch"
+             Height="auto"
+             Width="auto">
+    <Grid>
+        <ListView Name="StashesList" Margin="0,0,0,0" ItemsSource="{Binding Path=Stashes}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}"/>
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Message}"/>
+                    <GridViewColumn Header="Branch" DisplayMemberBinding="{Binding BranchName}"/>
+                </GridView>
+            </ListView.View> 
+        </ListView>
+    </Grid>
+</UserControl>

@@ -10,13 +10,13 @@ using Microsoft.VisualStudio.Shell;
 namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
 {
     [TeamExplorerNavigationItem(Constants.StashNavigationItemId, 1000, TargetPageId = Constants.StashPageId)]
-    public class StashTeamExplorerNavigationItem: ITeamExplorerNavigationItem2
+    public class StashListTeamExplorerNavigationItem : ITeamExplorerNavigationItem2
     {
         private readonly ITeamExplorer _teamExplorer;
         private readonly IServiceProvider _serviceProvider;
 
         [ImportingConstructor]
-        public StashTeamExplorerNavigationItem([Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider)
+        public StashListTeamExplorerNavigationItem([Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
             _teamExplorer = _serviceProvider.GetService(typeof(ITeamExplorer)) as ITeamExplorer;
@@ -28,7 +28,7 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
 
         public void Execute()
         {
-            _teamExplorer.NavigateToPage(new Guid(Constants.StashNavigationItemId), null);
+            _teamExplorer.NavigateToPage(new Guid(Constants.StashPageId), null);
         }
 
         public void Invalidate()
