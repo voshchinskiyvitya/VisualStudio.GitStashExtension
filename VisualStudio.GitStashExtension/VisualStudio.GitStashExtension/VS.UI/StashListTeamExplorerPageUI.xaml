@@ -4,21 +4,25 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VisualStudio.GitStashExtension.VS.UI"
+             xmlns:models="clr-namespace:VisualStudio.GitStashExtension.Models"
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch"
              HorizontalContentAlignment="Stretch"
              VerticalContentAlignment="Stretch"
              Height="auto"
              Width="auto">
+    
+    <UserControl.Resources>
+        <ResourceDictionary Source="/VisualStudio.GitStashExtension;component/Resources/ResourcesDictionary.xaml" />
+    </UserControl.Resources>
+    
     <Grid>
-        <ListView Name="StashesList" Margin="0,0,0,0" ItemsSource="{Binding Path=Stashes}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}"/>
-                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Message}"/>
-                    <GridViewColumn Header="Branch" DisplayMemberBinding="{Binding BranchName}"/>
-                </GridView>
-            </ListView.View> 
-        </ListView>
+        <ListBox Name="StashesList" 
+                 Margin="10,20,10,20" 
+                 ItemsSource="{Binding Path=Stashes}" 
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                 ItemContainerStyle="{StaticResource StashListItemStyle}"
+                 ItemTemplate="{StaticResource StashListItemTemplate}">
+        </ListBox>
     </Grid>
 </UserControl>

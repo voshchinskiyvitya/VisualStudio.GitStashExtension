@@ -74,6 +74,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Reference Include="Microsoft.TeamFoundation.Client">
+      <HintPath>..\Dependencies\Microsoft.TeamFoundation.Client.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.TeamFoundation.Common, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.TeamFoundation.All.12.0.30723.2\lib\net45\Microsoft.TeamFoundation.Common.dll</HintPath>
     </Reference>
@@ -169,6 +172,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Resources\ResourcesDictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="VS.UI\StashListTeamExplorerPageUI.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
