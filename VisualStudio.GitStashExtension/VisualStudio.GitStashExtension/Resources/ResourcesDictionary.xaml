@@ -9,6 +9,8 @@
 	<SolidColorBrush x:Key="ListViewItemSelectedBackgroundColor" Color="#007ACC"/>
 	<SolidColorBrush x:Key="ListViewItemSelectedForegroundColor" Color="#FFFFFF"/>
 
+	<SolidColorBrush x:Key="SearchBoxBorderColor" Color="#DBDDE6"/>
+
 	<Style x:Key="StashListStyle" TargetType="{x:Type ListBox}">
 		<Setter Property="BorderThickness" Value="0"></Setter>
 	</Style>
@@ -40,7 +42,11 @@
 										<DoubleAnimation Storyboard.TargetName="SelectedColorRect" Storyboard.TargetProperty="Opacity" Duration="0" To="1"/>
 									</Storyboard>
 								</VisualState>
-								<VisualState x:Name="SelectedUnfocused" />
+								<VisualState x:Name="SelectedUnfocused">
+									<Storyboard>
+										<DoubleAnimation Storyboard.TargetName="SelectedColorRect" Storyboard.TargetProperty="Opacity" Duration="0" To="1"/>
+									</Storyboard>
+								</VisualState>
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
 						<Rectangle x:Name="HoverColorRect" Opacity="0" Fill="{StaticResource ListViewItemHoverBackgroundColor}" RadiusX="1" RadiusY="1"/>

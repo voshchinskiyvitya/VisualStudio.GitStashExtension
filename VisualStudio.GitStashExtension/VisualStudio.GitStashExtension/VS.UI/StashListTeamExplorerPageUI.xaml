@@ -15,10 +15,18 @@
     <UserControl.Resources>
         <ResourceDictionary Source="/VisualStudio.GitStashExtension;component/Resources/ResourcesDictionary.xaml" />
     </UserControl.Resources>
-    
-    <Grid>
-        <ListBox Name="StashesList" 
-                 Margin="10,20,10,20" 
+
+	<Grid>
+		<Border BorderThickness="1" BorderBrush="{StaticResource SearchBoxBorderColor}" VerticalAlignment="Top" Margin="5 10 10 10" Height="22">
+			<Grid>
+				<TextBox Height="16" BorderThickness="0" Margin="0 3 18 3"></TextBox>
+				<Image HorizontalAlignment="Right" Source="pack://application:,,,/VisualStudio.GitStashExtension;component/Resources/SearchIcon.png" Height="16" Width="16" Margin="2 3 3 2"></Image>
+			</Grid>
+		</Border>
+		
+		
+		<ListBox Name="StashesList" 
+                 Margin="5,40,10,20" 
                  ItemsSource="{Binding Path=Stashes}" 
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
 				 Style="{StaticResource StashListStyle}"

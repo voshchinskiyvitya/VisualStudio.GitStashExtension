@@ -54,6 +54,7 @@
     <Compile Include="Models\Stash.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TeamExplorerExtensions\GitStashListStashesSection.cs" />
     <Compile Include="TeamExplorerExtensions\StashListTeamExplorerNavigationItem.cs" />
     <Compile Include="TeamExplorerExtensions\StashListTeamExplorerPage.cs" />
     <Compile Include="VS.UI\StashListPageViewModel.cs" />
@@ -72,7 +73,9 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\SearchIcon.png" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.TeamFoundation.Client">
       <HintPath>..\Dependencies\Microsoft.TeamFoundation.Client.dll</HintPath>

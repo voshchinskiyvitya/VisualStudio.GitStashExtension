@@ -9,7 +9,11 @@
 
         public const string StashPageId = "00FAA5EB-3EC5-4098-B550-D58C7035DDBE";
 
+        public const string StashListSectionId = "A94AE67A-AF52-42F2-B6E4-C433732AAEB3";
+
         public const string StashesLabel = "Stashes";
+
+        public const string StashesListSectionLabel = "Stash list";
 
         public const int NavigationItemColorArgb = 51212;  // green
     }
