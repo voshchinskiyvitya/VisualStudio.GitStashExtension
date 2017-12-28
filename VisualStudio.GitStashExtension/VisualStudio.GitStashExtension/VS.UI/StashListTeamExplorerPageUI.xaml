@@ -21,6 +21,7 @@
                  Margin="10,20,10,20" 
                  ItemsSource="{Binding Path=Stashes}" 
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+				 Style="{StaticResource StashListStyle}"
                  ItemContainerStyle="{StaticResource StashListItemStyle}"
                  ItemTemplate="{StaticResource StashListItemTemplate}">
         </ListBox>
