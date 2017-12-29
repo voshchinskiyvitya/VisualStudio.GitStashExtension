@@ -10,12 +10,6 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
     [TeamExplorerPage(Constants.StashPageId)]
     public class StashListTeamExplorerPage : ITeamExplorerPage
     {
-        [ImportingConstructor]
-        public StashListTeamExplorerPage([Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider)
-        {
-            PageContent = new StashListTeamExplorerPageUI(serviceProvider);
-        }
-
         public void Dispose()
         {
         }
