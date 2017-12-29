@@ -11,31 +11,17 @@ namespace VisualStudio.GitStashExtension.VS.UI
     public partial class StashListTeamExplorerPageUI : UserControl
     {
         private readonly StashListPageViewModel _viewModel;
-        private readonly ITeamExplorer _teamExplorer;
-        private readonly IServiceProvider _serviceProvider;
 
         public StashListTeamExplorerPageUI(IServiceProvider serviceProvider)
         {
             InitializeComponent();
 
-            DataContext = _viewModel = new StashListPageViewModel();
+            DataContext = _viewModel = new StashListPageViewModel(serviceProvider);
+        }
 
-            _serviceProvider = serviceProvider;
-            _teamExplorer = _serviceProvider.GetService(typeof(ITeamExplorer)) as ITeamExplorer;
-
-            var git = new GitCommandExecuter(_serviceProvider);
-
-            if (git.TryGetAllStashes(out var stashes, out var error))
-            {
-                foreach (var stash in stashes)
-                {
-                    _viewModel.Stashes.Add(stash);
-                }
-            }
-            else
-            {
-                _teamExplorer?.ShowNotification(error, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
-            }
+        private void SearchText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            _viewModel.UpdateStashList(SearchText.Text);
         }
     }
 }

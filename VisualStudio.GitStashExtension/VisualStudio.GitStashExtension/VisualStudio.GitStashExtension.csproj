@@ -47,6 +47,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="GitHelpers\GitCommandConstants.cs" />
     <Compile Include="GitHelpers\GitCommandExecuter.cs" />
     <Compile Include="GitHelpers\GitResultParser.cs" />
