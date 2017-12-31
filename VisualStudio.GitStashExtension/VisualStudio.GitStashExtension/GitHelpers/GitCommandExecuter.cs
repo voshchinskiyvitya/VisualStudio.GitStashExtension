@@ -42,6 +42,21 @@ namespace VisualStudio.GitStashExtension.GitHelpers
             return true;
         }
 
+        /// <summary>
+        /// Applies stash to current repository state by stash id.
+        /// </summary>
+        /// <param name="stashId">Stash Id.</param>
+        /// <param name="errorMessage">Error message.</param>
+        /// <returns>Bool value that indicates whether command execution was succeeded.</returns>
+        public bool ApplyStash(int stashId, out string errorMessage)
+        {
+            var applyCommand = string.Format(GitCommandConstants.StashApplyFormatted, stashId);
+            var commandResult = Execute(applyCommand);
+
+            errorMessage = commandResult.ErrorMessage;
+            return !commandResult.IsError;
+        }
+
         private GitCommandResult Execute(string gitCommand)
         {
             try

@@ -60,9 +60,4 @@
 		</Setter>
 		<Setter Property="Padding" Value="10 2 0 2"></Setter>
 	</Style>
-
-    <DataTemplate x:Key="StashListItemTemplate" DataType="models:Stash">
-        <TextBlock Text="{Binding Message}"></TextBlock>
-    </DataTemplate>
-
 </ResourceDictionary>

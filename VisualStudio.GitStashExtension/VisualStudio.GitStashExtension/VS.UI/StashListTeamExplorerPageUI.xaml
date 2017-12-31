@@ -30,8 +30,19 @@
                  ItemsSource="{Binding Stashes}" 
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
 				 Style="{StaticResource StashListStyle}"
-                 ItemContainerStyle="{StaticResource StashListItemStyle}"
-                 ItemTemplate="{StaticResource StashListItemTemplate}">
+                 ItemContainerStyle="{StaticResource StashListItemStyle}">
+
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding Message}" MouseDown="ListItem_MouseDown" Tag="{Binding Id}">
+						<TextBlock.ContextMenu>
+							<ContextMenu>
+								<MenuItem Header="Apply stash" Click="ApplyStashMenuItem_Click" Tag="{Binding Id}"></MenuItem>
+							</ContextMenu>
+						</TextBlock.ContextMenu>
+					</TextBlock>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
         </ListBox>
     </Grid>
 </UserControl>

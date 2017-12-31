@@ -60,6 +60,22 @@ namespace VisualStudio.GitStashExtension.VS.UI
             });
         }
 
+        /// <summary>
+        /// Applies stash to current repository state.
+        /// </summary>
+        /// <param name="stashId">Stash Id.</param>
+        public void ApplyStash(int stashId)
+        {
+            if (_gitCommandExecuter.ApplyStash(stashId, out var errorMessage))
+            {
+                _teamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.GitChanges), null);
+            }
+            else
+            {
+                _teamExplorer?.ShowNotification(errorMessage, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
+            }
+        }
+
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

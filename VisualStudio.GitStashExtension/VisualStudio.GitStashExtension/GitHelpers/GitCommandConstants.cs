@@ -6,5 +6,7 @@
     public class GitCommandConstants
     {
         public const string StashList = "stash list";
+
+        public const string StashApplyFormatted = "stash apply stash@{{{0}}}";
     }
 }
