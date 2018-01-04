@@ -1,4 +1,6 @@
-﻿namespace VisualStudio.GitStashExtension
+﻿using System.Drawing;
+
+namespace VisualStudio.GitStashExtension
 {
     /// <summary>
     /// Represents container for constants.
@@ -15,6 +17,6 @@
 
         public const string StashesListSectionLabel = "Stash list";
 
-        public const int NavigationItemColorArgb = 51212;  // green
+        public static Color NavigationItemColorArgb = Color.FromArgb(0, 213, 66);  // green
     }
 }

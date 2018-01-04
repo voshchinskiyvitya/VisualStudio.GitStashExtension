@@ -20,6 +20,7 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
         {
             _serviceProvider = serviceProvider;
             _teamExplorer = _serviceProvider.GetService(typeof(ITeamExplorer)) as ITeamExplorer;
+            _image = Resources.TeamExplorerIcon;
         }
 
         public void Dispose()
@@ -36,10 +37,20 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
         }
 
         public string Text => Constants.StashesLabel;
-        public Image Image => null;
+
+        private Image _image;
+        public Image Image => _image;
+
         public bool IsVisible => true;
         public bool IsEnabled => true;
-        public int ArgbColor => Constants.NavigationItemColorArgb;
+        public int ArgbColor => BitConverter.ToInt32(
+            new[] {
+                Constants.NavigationItemColorArgb.B,
+                Constants.NavigationItemColorArgb.G,
+                Constants.NavigationItemColorArgb.R,
+                Constants.NavigationItemColorArgb.A,
+            }, 0);
+
         public object Icon => null;
         public event PropertyChangedEventHandler PropertyChanged;
 
