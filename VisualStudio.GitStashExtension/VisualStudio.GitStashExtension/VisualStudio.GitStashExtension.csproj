@@ -50,6 +50,7 @@
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="GitHelpers\GitCommandConstants.cs" />
     <Compile Include="GitHelpers\GitCommandExecuter.cs" />
+    <Compile Include="GitHelpers\GitPathHelper.cs" />
     <Compile Include="GitHelpers\GitResultParser.cs" />
     <Compile Include="Models\GitCommandResult.cs" />
     <Compile Include="Models\Stash.cs" />

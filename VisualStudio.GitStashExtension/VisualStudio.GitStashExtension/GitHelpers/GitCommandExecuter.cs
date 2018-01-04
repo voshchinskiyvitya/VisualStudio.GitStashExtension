@@ -72,7 +72,7 @@ namespace VisualStudio.GitStashExtension.GitHelpers
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
                     // TODO: refactor next statement. Create git helper for fetching git.exe path.
-                    FileName = @"c:\Program Files\Git\bin\git.exe",
+                    FileName = GitPathHelper.GetGitPath(),
                     Arguments = gitCommand,
                     WorkingDirectory = activeRepository.RepositoryPath
                 };
