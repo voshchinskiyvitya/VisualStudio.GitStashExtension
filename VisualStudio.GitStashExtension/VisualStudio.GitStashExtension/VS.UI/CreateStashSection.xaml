@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="VisualStudio.GitStashExtension.VS.UI.CreateStashSection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VisualStudio.GitStashExtension.VS.UI"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch"
+             HorizontalContentAlignment="Stretch"
+             VerticalContentAlignment="Stretch"
+             Height="auto"
+             Width="auto">
+
+	<UserControl.Resources>
+		<ResourceDictionary Source="/VisualStudio.GitStashExtension;component/Resources/ResourcesDictionary.xaml" />
+	</UserControl.Resources>
+
+	<Grid>
+		<Border BorderThickness="1" BorderBrush="{StaticResource TextBoxBorderColor}" VerticalAlignment="Top" Margin="15 10 10 10" Height="22">
+			<TextBox x:Name="MessageTextBox" Height="16" Text="{Binding Message}" BorderThickness="0" Margin="0 3 0 3"></TextBox>
+		</Border>
+		<Button x:Name="CreateStashButton" Click="CreateStashButton_Click" Content="Create stash" Width="100" Height="20" Margin="15 40 10 10" HorizontalAlignment="Left"></Button>
+	</Grid>
+</UserControl>

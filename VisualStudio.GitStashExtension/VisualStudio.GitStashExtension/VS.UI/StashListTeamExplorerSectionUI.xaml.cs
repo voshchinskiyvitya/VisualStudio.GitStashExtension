@@ -7,17 +7,23 @@ using VisualStudio.GitStashExtension.GitHelpers;
 namespace VisualStudio.GitStashExtension.VS.UI
 {
     /// <summary>
-    /// Interaction logic for StashTeamExplorerPageUI.xaml
+    /// Interaction logic for StashTeamExplorerSectionUI.xaml
     /// </summary>
-    public partial class StashListTeamExplorerPageUI : UserControl
+    public partial class StashListTeamExplorerSectionUI : UserControl
     {
-        private readonly StashListPageViewModel _viewModel;
+        private readonly StashListSectionViewModel _viewModel;
 
-        public StashListTeamExplorerPageUI(IServiceProvider serviceProvider)
+        public StashListTeamExplorerSectionUI(IServiceProvider serviceProvider)
         {
             InitializeComponent();
 
-            DataContext = _viewModel = new StashListPageViewModel(serviceProvider);
+            DataContext = _viewModel = new StashListSectionViewModel(serviceProvider);
+        }
+
+        public void Refresh()
+        {
+            SearchText.Text = string.Empty;
+            _viewModel.UpdateStashList(string.Empty);
         }
 
         private void SearchText_TextChanged(object sender, TextChangedEventArgs e)

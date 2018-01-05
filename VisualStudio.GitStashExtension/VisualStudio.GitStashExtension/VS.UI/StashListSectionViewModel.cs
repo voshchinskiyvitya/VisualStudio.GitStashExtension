@@ -13,7 +13,7 @@ using VisualStudio.GitStashExtension.Models;
 
 namespace VisualStudio.GitStashExtension.VS.UI
 {
-    public class StashListPageViewModel: INotifyPropertyChanged
+    public class StashListSectionViewModel: INotifyPropertyChanged
     {
         private readonly ITeamExplorer _teamExplorer;
         private readonly IServiceProvider _serviceProvider;
@@ -32,7 +32,7 @@ namespace VisualStudio.GitStashExtension.VS.UI
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public StashListPageViewModel(IServiceProvider serviceProvider)
+        public StashListSectionViewModel(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
             _teamExplorer = _serviceProvider.GetService(typeof(ITeamExplorer)) as ITeamExplorer;
@@ -66,7 +66,7 @@ namespace VisualStudio.GitStashExtension.VS.UI
         /// <param name="stashId">Stash Id.</param>
         public void ApplyStash(int stashId)
         {
-            if (_gitCommandExecuter.ApplyStash(stashId, out var errorMessage))
+            if (_gitCommandExecuter.TryApplyStash(stashId, out var errorMessage))
             {
                 _teamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.GitChanges), null);
             }

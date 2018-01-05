@@ -48,10 +48,28 @@ namespace VisualStudio.GitStashExtension.GitHelpers
         /// <param name="stashId">Stash Id.</param>
         /// <param name="errorMessage">Error message.</param>
         /// <returns>Bool value that indicates whether command execution was succeeded.</returns>
-        public bool ApplyStash(int stashId, out string errorMessage)
+        public bool TryApplyStash(int stashId, out string errorMessage)
         {
             var applyCommand = string.Format(GitCommandConstants.StashApplyFormatted, stashId);
             var commandResult = Execute(applyCommand);
+
+            errorMessage = commandResult.ErrorMessage;
+            return !commandResult.IsError;
+        }
+
+        /// <summary>
+        /// Creates stash on current branch.
+        /// </summary>
+        /// <param name="message">Save message for stash.</param>
+        /// <param name="errorMessage">Error message.</param>
+        /// <returns>Bool value that indicates whether command execution was succeeded.</returns>
+        public bool TryCreateStash(string message, out string errorMessage)
+        {
+            var createCommand = string.IsNullOrEmpty(message) ? 
+                GitCommandConstants.Stash : 
+                string.Format(GitCommandConstants.StashSaveFormatted, message);
+
+            var commandResult = Execute(createCommand);
 
             errorMessage = commandResult.ErrorMessage;
             return !commandResult.IsError;

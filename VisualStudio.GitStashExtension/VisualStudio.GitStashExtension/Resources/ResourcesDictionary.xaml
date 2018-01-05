@@ -10,6 +10,7 @@
 	<SolidColorBrush x:Key="ListViewItemSelectedForegroundColor" Color="#FFFFFF"/>
 
 	<SolidColorBrush x:Key="SearchBoxBorderColor" Color="#DBDDE6"/>
+	<SolidColorBrush x:Key="TextBoxBorderColor" Color="#DBDDE6"/>
 
 	<Style x:Key="StashListStyle" TargetType="{x:Type ListBox}">
 		<Setter Property="BorderThickness" Value="0"></Setter>

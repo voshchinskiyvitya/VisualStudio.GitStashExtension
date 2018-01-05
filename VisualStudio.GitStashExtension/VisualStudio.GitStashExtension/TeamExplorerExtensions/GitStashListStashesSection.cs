@@ -14,10 +14,12 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
     [TeamExplorerSection(Constants.StashListSectionId, Constants.StashPageId, 100)]
     public class GitStashListStashesSection : ITeamExplorerSection
     {
+        private readonly StashListTeamExplorerSectionUI _sectionContent;
+
         [ImportingConstructor]
         public GitStashListStashesSection([Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider)
         {
-            SectionContent = new StashListTeamExplorerPageUI(serviceProvider);
+            SectionContent = _sectionContent = new StashListTeamExplorerSectionUI(serviceProvider);
         }
 
         public string Title => Constants.StashesListSectionLabel;
@@ -79,6 +81,7 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
 
         public void Refresh()
         {
+            _sectionContent.Refresh();
         }
 
         public void SaveContext(object sender, SectionSaveContextEventArgs e)

@@ -10,6 +10,16 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
     [TeamExplorerPage(Constants.StashPageId)]
     public class StashListTeamExplorerPage : ITeamExplorerPage
     {
+        private readonly IServiceProvider _serviceProvider;
+        private readonly CreateStashSection _pageContent;
+
+        [ImportingConstructor]
+        public StashListTeamExplorerPage([Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+            PageContent = _pageContent = new CreateStashSection(_serviceProvider);
+        }
+
         public void Dispose()
         {
         }
@@ -29,6 +39,7 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
 
         public void Refresh()
         {
+            _pageContent.Refresh();
         }
 
         public void Cancel()
