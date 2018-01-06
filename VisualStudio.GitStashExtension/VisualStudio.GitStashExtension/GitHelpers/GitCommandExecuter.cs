@@ -75,6 +75,22 @@ namespace VisualStudio.GitStashExtension.GitHelpers
             return !commandResult.IsError;
         }
 
+        /// <summary>
+        /// Delete stash by id.
+        /// </summary>
+        /// <param name="id">tash id.</param>
+        /// <param name="errorMessage">Error message.</param>
+        /// <returns>Bool value that indicates whether command execution was succeeded.</returns>
+        public bool TryDeleteStash(int id, out string errorMessage)
+        {
+            var deleteCommand = string.Format(GitCommandConstants.StashDeleteFormatted, id);
+
+            var commandResult = Execute(deleteCommand);
+
+            errorMessage = commandResult.ErrorMessage;
+            return !commandResult.IsError;
+        }
+
         private GitCommandResult Execute(string gitCommand)
         {
             try

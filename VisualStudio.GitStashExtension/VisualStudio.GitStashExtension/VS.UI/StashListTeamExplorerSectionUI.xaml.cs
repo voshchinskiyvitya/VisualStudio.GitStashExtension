@@ -42,6 +42,17 @@ namespace VisualStudio.GitStashExtension.VS.UI
             }
         }
 
+        private void DeleteStashMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            var stashId = menuItem.Tag as int?;
+
+            if (stashId.HasValue)
+            {
+                _viewModel.DeleteStash(stashId.Value);
+            }
+        }
+
         private void ListItem_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (e.ClickCount == 2)

@@ -76,6 +76,22 @@ namespace VisualStudio.GitStashExtension.VS.UI
             }
         }
 
+        /// <summary>
+        /// Removes stash by id.
+        /// </summary>
+        /// <param name="stashId">Stash Id.</param>
+        public void DeleteStash(int stashId)
+        {
+            if (_gitCommandExecuter.TryDeleteStash(stashId, out var errorMessage))
+            {
+                _teamExplorer.CurrentPage.RefreshPageAndSections();
+            }
+            else
+            {
+                _teamExplorer?.ShowNotification(errorMessage, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
+            }
+        }
+
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

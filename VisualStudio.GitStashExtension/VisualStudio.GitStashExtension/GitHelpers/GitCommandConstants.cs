@@ -12,5 +12,7 @@
         public const string Stash = "stash";
 
         public const string StashSaveFormatted = "stash save {0}";
+
+        public const string StashDeleteFormatted = "stash drop stash@{{{0}}}";
     }
 }
