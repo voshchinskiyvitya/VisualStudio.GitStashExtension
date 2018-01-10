@@ -62,12 +62,16 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="TeamExplorerExtensions\GitStashListStashesSection.cs" />
+    <Compile Include="TeamExplorerExtensions\StashInfoTeamExplorerPage.cs" />
     <Compile Include="TeamExplorerExtensions\StashListTeamExplorerNavigationItem.cs" />
     <Compile Include="TeamExplorerExtensions\StashListTeamExplorerPage.cs" />
     <Compile Include="VS.UI\CreateStashSection.xaml.cs">
       <DependentUpon>CreateStashSection.xaml</DependentUpon>
     </Compile>
     <Compile Include="VS.UI\CreateStashSetionViewModel.cs" />
+    <Compile Include="VS.UI\StashInfoPage.xaml.cs">
+      <DependentUpon>StashInfoPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="VS.UI\StashListSectionViewModel.cs" />
     <Compile Include="VS.UI\StashListTeamExplorerSectionUI.xaml.cs">
       <DependentUpon>StashListTeamExplorerSectionUI.xaml</DependentUpon>
@@ -180,9 +184,11 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -191,6 +197,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="VS.UI\CreateStashSection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VS.UI\StashInfoPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

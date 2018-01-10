@@ -12,11 +12,15 @@ namespace VisualStudio.GitStashExtension.VS.UI
     public partial class StashListTeamExplorerSectionUI : UserControl
     {
         private readonly StashListSectionViewModel _viewModel;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly ITeamExplorer _teamExplorer;
 
         public StashListTeamExplorerSectionUI(IServiceProvider serviceProvider)
         {
             InitializeComponent();
 
+            _serviceProvider = serviceProvider;
+            _teamExplorer = _serviceProvider.GetService(typeof(ITeamExplorer)) as ITeamExplorer;
             DataContext = _viewModel = new StashListSectionViewModel(serviceProvider);
         }
 
@@ -29,6 +33,11 @@ namespace VisualStudio.GitStashExtension.VS.UI
         private void SearchText_TextChanged(object sender, TextChangedEventArgs e)
         {
             _viewModel.UpdateStashList(SearchText.Text);
+        }
+
+        private void StashInfoMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _teamExplorer.NavigateToPage(new Guid(Constants.StashInfoPageId), 22);
         }
 
         private void ApplyStashMenuItem_Click(object sender, RoutedEventArgs e)

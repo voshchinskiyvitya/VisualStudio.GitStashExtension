@@ -37,9 +37,11 @@
 					<TextBlock Text="{Binding Message}" MouseDown="ListItem_MouseDown" Tag="{Binding Id}">
 						<TextBlock.ContextMenu>
 							<ContextMenu>
-								<MenuItem Header="Apply stash" Click="ApplyStashMenuItem_Click" Tag="{Binding Id}"></MenuItem>
-								<MenuItem Header="Delete stash" Click="DeleteStashMenuItem_Click" Tag="{Binding Id}"></MenuItem>
-							</ContextMenu>
+                                <MenuItem Header="Stash info" Click="StashInfoMenuItem_Click" Tag="{Binding Id}"></MenuItem>
+							    <Separator></Separator>
+                                <MenuItem Header="Apply stash" Click="ApplyStashMenuItem_Click" Tag="{Binding Id}"></MenuItem>
+                                <MenuItem Header="Delete stash" Click="DeleteStashMenuItem_Click" Tag="{Binding Id}"></MenuItem>
+                            </ContextMenu>
 						</TextBlock.ContextMenu>
 					</TextBlock>
 				</DataTemplate>
