@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using VisualStudio.GitStashExtension.Models;
 
 namespace VisualStudio.GitStashExtension.VS.UI
 {
@@ -20,11 +21,11 @@ namespace VisualStudio.GitStashExtension.VS.UI
     /// </summary>
     public partial class StashInfoChangesSectionUI : UserControl
     {
-        public StashInfoChangesSectionUI()
+        public StashInfoChangesSectionUI(Stash stash)
         {
             InitializeComponent();
 
-            DataContext = new StashInfoChangesSectionViewModel();
+            DataContext = new StashInfoChangesSectionViewModel(stash);
         }
     }
 }

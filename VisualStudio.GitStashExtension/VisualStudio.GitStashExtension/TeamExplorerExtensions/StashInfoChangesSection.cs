@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using Microsoft.TeamFoundation.Controls;
+using VisualStudio.GitStashExtension.Models;
 using VisualStudio.GitStashExtension.VS.UI;
 
 namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
@@ -12,7 +13,6 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
 
         public StashInfoChangesSection()
         {
-            _sectionContent = new StashInfoChangesSectionUI();
         }
 
         public void Dispose()
@@ -30,6 +30,7 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
 
         public void SaveContext(object sender, SectionSaveContextEventArgs e)
         {
+            _sectionContent = new StashInfoChangesSectionUI(e.Context as Stash);
         }
 
         public void Refresh()

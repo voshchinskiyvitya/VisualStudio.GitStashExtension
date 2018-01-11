@@ -23,6 +23,8 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
         public void Initialize(object sender, PageInitializeEventArgs e)
         {
             _pageContent = new StashInfoPage(e.Context as Stash);
+            var changesSection = this.GetSection(new Guid(Constants.StashInfoChangesSectionId));
+            changesSection.SaveContext(this, new SectionSaveContextEventArgs {Context = e.Context});
         }
 
         public void Loaded(object sender, PageLoadedEventArgs e)
