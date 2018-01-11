@@ -56,5 +56,22 @@ namespace VisualStudio.GitStashExtension.GitHelpers
 
             return stashes;
         }
+
+        /// <summary>
+        /// Converst git stash info command string result to Stash model.
+        /// </summary>
+        /// <param name="data">String data.</param>
+        /// <returns>Stash model.</returns>
+        public static Stash ParseStashInfoResult(string data)
+        {
+            var filePaths = data.Split('\n')
+                .Where(s => !string.IsNullOrEmpty(s))
+                .ToList();
+
+            return new Stash
+            {
+                ChangedFiles = filePaths.Select(p => new ChangedFile { Path = p }).ToList()
+            };
+        }
     }
 }

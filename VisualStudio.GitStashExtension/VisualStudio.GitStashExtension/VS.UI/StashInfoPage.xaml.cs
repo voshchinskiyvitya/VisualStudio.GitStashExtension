@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using VisualStudio.GitStashExtension.Models;
 
 namespace VisualStudio.GitStashExtension.VS.UI
 {
@@ -7,9 +8,11 @@ namespace VisualStudio.GitStashExtension.VS.UI
     /// </summary>
     public partial class StashInfoPage : UserControl
     {
-        public StashInfoPage()
+        public StashInfoPage(Stash stash)
         {
             InitializeComponent();
+
+            DataContext = new StashInfoPageViewModel(stash);
         }
     }
 }

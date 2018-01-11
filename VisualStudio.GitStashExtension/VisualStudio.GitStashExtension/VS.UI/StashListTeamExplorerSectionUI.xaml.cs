@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Microsoft.TeamFoundation.Controls;
 using VisualStudio.GitStashExtension.GitHelpers;
+using VisualStudio.GitStashExtension.Models;
 
 namespace VisualStudio.GitStashExtension.VS.UI
 {
@@ -37,7 +38,15 @@ namespace VisualStudio.GitStashExtension.VS.UI
 
         private void StashInfoMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _teamExplorer.NavigateToPage(new Guid(Constants.StashInfoPageId), 22);
+            var menuItem = sender as MenuItem;
+            var stash = menuItem.Tag as Stash;
+            var stashInfo = _viewModel.GetStashInfo(stash.Id);
+
+            if (stashInfo != null)
+            {
+                stash.ChangedFiles = stashInfo.ChangedFiles;
+                _teamExplorer.NavigateToPage(new Guid(Constants.StashInfoPageId), stash);
+            }
         }
 
         private void ApplyStashMenuItem_Click(object sender, RoutedEventArgs e)

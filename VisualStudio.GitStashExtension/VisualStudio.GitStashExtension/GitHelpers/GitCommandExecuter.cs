@@ -78,7 +78,7 @@ namespace VisualStudio.GitStashExtension.GitHelpers
         /// <summary>
         /// Delete stash by id.
         /// </summary>
-        /// <param name="id">tash id.</param>
+        /// <param name="id">Stash id.</param>
         /// <param name="errorMessage">Error message.</param>
         /// <returns>Bool value that indicates whether command execution was succeeded.</returns>
         public bool TryDeleteStash(int id, out string errorMessage)
@@ -89,6 +89,31 @@ namespace VisualStudio.GitStashExtension.GitHelpers
 
             errorMessage = commandResult.ErrorMessage;
             return !commandResult.IsError;
+        }
+
+        /// <summary>
+        /// Gets stash info by id.
+        /// </summary>
+        /// <param name="id">Stash id.</param>
+        /// <param name="stash">Stash model.</param>
+        /// <param name="errorMessage">Error message.</param>
+        /// <returns>Bool value that indicates whether command execution was succeeded.</returns>
+        public bool TryGetStashInfo(int id, out Stash stash, out string errorMessage)
+        {
+            var infoCommand = string.Format(GitCommandConstants.StashInfoFormatted, id);
+
+            var commandResult = Execute(infoCommand);
+
+            if (commandResult.IsError)
+            {
+                errorMessage = commandResult.ErrorMessage;
+                stash = null;
+                return false;
+            }
+
+            errorMessage = string.Empty;
+            stash = GitResultParser.ParseStashInfoResult(commandResult.OutputMessage);
+            return true;
         }
 
         private GitCommandResult Execute(string gitCommand)

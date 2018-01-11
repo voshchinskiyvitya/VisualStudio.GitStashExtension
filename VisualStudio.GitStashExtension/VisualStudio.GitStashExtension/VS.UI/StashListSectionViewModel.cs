@@ -92,6 +92,20 @@ namespace VisualStudio.GitStashExtension.VS.UI
             }
         }
 
+        /// <summary>
+        /// Gets stash info by id.
+        /// </summary>
+        /// <param name="stashId">Stash Id.</param>
+        public Stash GetStashInfo(int stashId)
+        {
+            if (!_gitCommandExecuter.TryGetStashInfo(stashId, out var stash, out var errorMessage))
+            { 
+                _teamExplorer?.ShowNotification(errorMessage, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
+            }
+
+            return stash;
+        }
+
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

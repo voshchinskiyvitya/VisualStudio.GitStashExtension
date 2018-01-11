@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using Microsoft.TeamFoundation.Controls;
+using VisualStudio.GitStashExtension.Models;
 using VisualStudio.GitStashExtension.VS.UI;
 
 namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
@@ -8,11 +9,10 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
     [TeamExplorerPage(Constants.StashInfoPageId)]
     public class StashInfoTeamExplorerPage: ITeamExplorerPage
     {
-        private readonly object _pageContent;
+        private object _pageContent;
 
         public StashInfoTeamExplorerPage()
         {
-            _pageContent = new StashInfoPage();
         }
 
         public void Dispose()
@@ -22,6 +22,7 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
         public event PropertyChangedEventHandler PropertyChanged;
         public void Initialize(object sender, PageInitializeEventArgs e)
         {
+            _pageContent = new StashInfoPage(e.Context as Stash);
         }
 
         public void Loaded(object sender, PageLoadedEventArgs e)

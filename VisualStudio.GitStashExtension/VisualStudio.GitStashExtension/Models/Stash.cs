@@ -1,4 +1,6 @@
-﻿namespace VisualStudio.GitStashExtension.Models
+﻿using System.Collections.Generic;
+
+namespace VisualStudio.GitStashExtension.Models
 {
     /// <summary>
     /// Represents simple model for stash info.
@@ -19,5 +21,10 @@
         /// Branch name on which stash was created.
         /// </summary>
         public string BranchName { get; set; }
+
+        /// <summary>
+        /// List of changed files.
+        /// </summary>
+        public IList<ChangedFile> ChangedFiles { get; set; }
     }
 }

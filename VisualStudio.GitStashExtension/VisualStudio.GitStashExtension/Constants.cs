@@ -15,11 +15,15 @@ namespace VisualStudio.GitStashExtension
 
         public const string StashListSectionId = "A94AE67A-AF52-42F2-B6E4-C433732AAEB3";
 
+        public const string StashInfoChangesSectionId = "43CB2B08-DBEE-4096-B091-EBAE5E2E07D2";
+
         public const string StashesLabel = "Stashes";
 
         public const string StashesInfoLabel = "Stashe Info";
 
         public const string StashesListSectionLabel = "Stash list";
+
+        public const string StashesInfoChangesSectionLabel = "Files";
 
         public static Color NavigationItemColorArgb = Color.FromArgb(0, 213, 66);  // green
     }
