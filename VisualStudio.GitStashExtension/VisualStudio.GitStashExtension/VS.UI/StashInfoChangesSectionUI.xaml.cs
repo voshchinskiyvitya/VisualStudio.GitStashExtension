@@ -21,11 +21,14 @@ namespace VisualStudio.GitStashExtension.VS.UI
     /// </summary>
     public partial class StashInfoChangesSectionUI : UserControl
     {
-        public StashInfoChangesSectionUI(Stash stash)
+        private readonly IServiceProvider _serviceProvider;
+
+        public StashInfoChangesSectionUI(Stash stash, IServiceProvider serviceProvider)
         {
+            _serviceProvider = serviceProvider;
             InitializeComponent();
 
-            DataContext = new StashInfoChangesSectionViewModel(stash);
+            DataContext = new StashInfoChangesSectionViewModel(stash, serviceProvider);
         }
     }
 }

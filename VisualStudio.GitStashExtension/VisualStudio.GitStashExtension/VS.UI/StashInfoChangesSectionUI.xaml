@@ -11,6 +11,15 @@
              Height="auto"
              Width="auto">
     <Grid>
-        <TreeView ItemsSource="{Binding ChangeItems}"></TreeView>
+        <TreeView ItemsSource="{Binding ChangeItems}">
+            <TreeView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <Image Source="{Binding ImageSource}" Width="20" Height="20"></Image>
+                        <TextBlock Text="{Binding Header}"></TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
     </Grid>
 </UserControl>

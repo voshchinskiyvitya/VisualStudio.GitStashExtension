@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.Composition;
 using Microsoft.TeamFoundation.Controls;
+using Microsoft.VisualStudio.Shell;
 using VisualStudio.GitStashExtension.Models;
 using VisualStudio.GitStashExtension.VS.UI;
 
@@ -10,9 +12,12 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
     public class StashInfoChangesSection: ITeamExplorerSection
     {
         private object _sectionContent;
+        private readonly IServiceProvider _serviceProvider;
 
-        public StashInfoChangesSection()
+        [ImportingConstructor]
+        public StashInfoChangesSection([Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider)
         {
+            _serviceProvider = serviceProvider;
         }
 
         public void Dispose()
@@ -30,7 +35,7 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
 
         public void SaveContext(object sender, SectionSaveContextEventArgs e)
         {
-            _sectionContent = new StashInfoChangesSectionUI(e.Context as Stash);
+            _sectionContent = new StashInfoChangesSectionUI(e.Context as Stash, _serviceProvider);
         }
 
         public void Refresh()
