@@ -30,7 +30,8 @@
                  ItemsSource="{Binding Stashes}" 
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
 				 Style="{StaticResource StashListStyle}"
-                 ItemContainerStyle="{StaticResource StashListItemStyle}">
+                 ItemContainerStyle="{StaticResource StashListItemStyle}"
+                 PreviewMouseWheel="PreviewMouseWheelForListView">
 
 			<ListBox.ItemTemplate>
 				<DataTemplate>

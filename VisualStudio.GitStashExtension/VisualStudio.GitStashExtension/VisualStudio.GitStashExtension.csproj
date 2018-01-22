@@ -55,6 +55,7 @@
     <Compile Include="Models\ChangedFile.cs" />
     <Compile Include="Models\GitCommandResult.cs" />
     <Compile Include="Models\Stash.cs" />
+    <Compile Include="Models\TreeViewItemWithIcon.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources.Designer.cs">
