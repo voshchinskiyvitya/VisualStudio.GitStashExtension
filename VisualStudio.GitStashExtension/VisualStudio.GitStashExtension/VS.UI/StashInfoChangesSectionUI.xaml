@@ -17,6 +17,8 @@
                   ItemTemplate="{StaticResource TeamExplorerTreeViewItemTemplate}" 
                   ItemContainerStyle="{StaticResource TeamExplorerTreeViewItemStyle}"
                   Style="{StaticResource TeamExplorerTreeViewStyle}"
-                  PreviewMouseWheel="PreviewMouseWheelForTreeView"></TreeView>
+                  PreviewMouseWheel="PreviewMouseWheelForTreeView"
+                  TreeViewItem.Expanded="TreeView_ExpandedOrCollapsed"
+                  TreeViewItem.Collapsed="TreeView_ExpandedOrCollapsed"></TreeView>
     </Grid>
 </UserControl>

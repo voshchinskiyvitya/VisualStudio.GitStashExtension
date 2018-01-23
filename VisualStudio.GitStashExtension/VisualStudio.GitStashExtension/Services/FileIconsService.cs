@@ -22,9 +22,11 @@ namespace VisualStudio.GitStashExtension.Services
             return image?.Value as BitmapSource;
         }
 
-        public BitmapSource GetFolderIcon()
+        public BitmapSource GetFolderIcon(bool isExpanded)
         {
-            var a = _vsImageService.GetImage(KnownMonikers.FolderClosed,
+            var folderImageMoniker = isExpanded ? KnownMonikers.FolderOpened : KnownMonikers.FolderClosed;
+
+            var vsImage = _vsImageService.GetImage(folderImageMoniker,
                 new ImageAttributes
                 {
                     StructSize = Marshal.SizeOf(typeof(ImageAttributes)),
@@ -36,7 +38,7 @@ namespace VisualStudio.GitStashExtension.Services
                     Flags = (uint) _ImageAttributesFlags.IAF_RequiredFlags |
                             unchecked((uint) _ImageAttributesFlags.IAF_Background)
                 });
-            var image = a as WpfPropertyValue;
+            var image = vsImage as WpfPropertyValue;
 
             return image?.Value as BitmapSource;
         }

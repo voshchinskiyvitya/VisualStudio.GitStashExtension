@@ -68,6 +68,40 @@
     
     <Style x:Key="TeamExplorerTreeViewItemStyle" TargetType="{x:Type TreeViewItem}">
         <Setter Property="IsExpanded" Value="{Binding IsExpanded}"></Setter>
+        <!--<Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition MinWidth="19" Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <ToggleButton x:Name="Expander"
+                                      IsChecked="{Binding Path=IsExpanded,
+                                      RelativeSource={RelativeSource TemplatedParent}}"
+                                      ClickMode="Press"/>
+                        <Rectangle Grid.Row="0" Grid.Column="0" x:Name="HoverColorRect" Opacity="0" Fill="{StaticResource ListViewItemHoverBackgroundColor}" RadiusX="1" RadiusY="1"/>
+                        <Rectangle Grid.Row="0" Grid.Column="0" x:Name="SelectedColorRect" Opacity="0.5" Fill="{StaticResource ListViewItemSelectedBackgroundColor}" RadiusX="1" RadiusY="1"/>
+                        <Rectangle Grid.Row="0" Grid.Column="1" x:Name="SelectedColorRect_2" Opacity="0.5" Fill="{StaticResource ListViewItemSelectedBackgroundColor}" RadiusX="1" RadiusY="1"/>
+                        <Rectangle Grid.Row="0" Grid.Column="2" x:Name="SelectedColorRect_3" Opacity="0.5" Fill="{StaticResource ListViewItemSelectedBackgroundColor}" RadiusX="1" RadiusY="1"/>
+                        <Border Name="Bd"
+                                Grid.Row="0" Grid.Column="1"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                        </Border>
+                        <ItemsPresenter x:Name="ItemsHost" Grid.Row="1"  Grid.Column="1" Grid.ColumnSpan="2"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
         <Style.Triggers>
             <Trigger Property="IsSelected" Value="True">
                 <Setter Property="Background" Value="{StaticResource ListViewItemSelectedBackgroundColor}"/>
@@ -75,7 +109,7 @@
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{StaticResource ListViewItemHoverBackgroundColor}"/>
             </Trigger>
-        </Style.Triggers>
+        </Style.Triggers>-->
     </Style>
 
     <HierarchicalDataTemplate x:Key="TeamExplorerTreeViewItemTemplate" DataType="{x:Type models:TreeViewItemWithIcon}" ItemsSource="{Binding Items}">

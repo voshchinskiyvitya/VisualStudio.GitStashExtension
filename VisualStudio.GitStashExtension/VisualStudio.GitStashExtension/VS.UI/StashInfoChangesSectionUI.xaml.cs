@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Microsoft.VisualStudio.Shell.Interop;
 using VisualStudio.GitStashExtension.Models;
+using VisualStudio.GitStashExtension.Services;
 
 namespace VisualStudio.GitStashExtension.VS.UI
 {
@@ -22,13 +14,17 @@ namespace VisualStudio.GitStashExtension.VS.UI
     public partial class StashInfoChangesSectionUI : UserControl
     {
         private readonly IServiceProvider _serviceProvider;
+        private readonly IVsImageService2 _vsImageService;
+        private readonly FileIconsService _fileIconsService;
 
         public StashInfoChangesSectionUI(Stash stash, IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
+            _vsImageService = _serviceProvider.GetService(typeof(SVsImageService)) as IVsImageService2;
+            _fileIconsService = new FileIconsService(_vsImageService);
             InitializeComponent();
 
-            DataContext = new StashInfoChangesSectionViewModel(stash, serviceProvider);
+            DataContext = new StashInfoChangesSectionViewModel(stash, _fileIconsService);
         }
 
         private void PreviewMouseWheelForTreeView(object sender, MouseWheelEventArgs e)
@@ -44,6 +40,15 @@ namespace VisualStudio.GitStashExtension.VS.UI
             };
             var parent = ((Control) sender).Parent as UIElement;
             parent?.RaiseEvent(eventArg);
+        }
+
+        private void TreeView_ExpandedOrCollapsed(object sender, RoutedEventArgs e)
+        {
+            var item = e.OriginalSource as TreeViewItem;
+            if (item?.DataContext is TreeViewItemWithIcon itemWithIcon)
+            {
+                itemWithIcon.Source = _fileIconsService.GetFolderIcon(item.IsExpanded);
+            }
         }
     }
 }

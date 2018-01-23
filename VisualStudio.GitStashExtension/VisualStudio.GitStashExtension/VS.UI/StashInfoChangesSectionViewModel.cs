@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows.Controls;
 using System.Windows.Forms;
-using Microsoft.VisualStudio.Shell.Interop;
 using VisualStudio.GitStashExtension.Annotations;
 using VisualStudio.GitStashExtension.Models;
 using VisualStudio.GitStashExtension.Services;
@@ -15,17 +12,13 @@ namespace VisualStudio.GitStashExtension.VS.UI
 {
     public class StashInfoChangesSectionViewModel: INotifyPropertyChanged
     {
-        private ObservableCollection<TreeViewItemWithIcon> _changeItems;
-        private readonly IServiceProvider _serviceProvider;
-        private readonly IVsImageService2 _vsImageService;
         private readonly FileIconsService _fileIconsService;
+        private ObservableCollection<TreeViewItemWithIcon> _changeItems;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public StashInfoChangesSectionViewModel(Stash stash, IServiceProvider serviceProvider)
+        public StashInfoChangesSectionViewModel(Stash stash, FileIconsService fileIconsService)
         {
-            _serviceProvider = serviceProvider;
-            _vsImageService = _serviceProvider.GetService(typeof(SVsImageService)) as IVsImageService2;
-            _fileIconsService = new FileIconsService(_vsImageService);
+            _fileIconsService = fileIconsService;
 
             if (stash == null)
                 return;
@@ -74,13 +67,13 @@ namespace VisualStudio.GitStashExtension.VS.UI
             var fileExtension = fileParts.Last();
             var icon = isFile
                 ? _fileIconsService.GetFileIcon("." + fileExtension)
-                : _fileIconsService.GetFolderIcon();
+                : _fileIconsService.GetFolderIcon(true);
 
             var treeViewItem = new TreeViewItemWithIcon
             {
                 Text = node.Text,
                 Source = icon,
-                IsExpanded = true
+                IsExpanded = !isFile
             };
 
             foreach (var child in node.Nodes.Cast<TreeNode>().ToList())
