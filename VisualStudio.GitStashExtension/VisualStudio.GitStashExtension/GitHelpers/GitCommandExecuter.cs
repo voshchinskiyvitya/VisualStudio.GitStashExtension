@@ -127,7 +127,7 @@ namespace VisualStudio.GitStashExtension.GitHelpers
         {
             var diffCommand = string.Format(GitCommandConstants.StashFileDiffFormatted, id, filePath);
 
-            var commandResult = Execute(diffCommand);
+            var commandResult = ExecuteWithoutResult(diffCommand);
 
             if (commandResult.IsError)
             {
@@ -171,6 +171,39 @@ namespace VisualStudio.GitStashExtension.GitHelpers
                         OutputMessage = outputMessage,
                         ErrorMessage = errorMessage
                     };
+                }
+            }
+            catch
+            {
+                return new GitCommandResult { ErrorMessage = "Unexpected error." };
+            }
+        }
+
+        private GitCommandResult ExecuteWithoutResult(string gitCommand)
+        {
+            try
+            {
+                var activeRepository = _gitService.ActiveRepositories.FirstOrDefault();
+                if (activeRepository == null)
+                    return new GitCommandResult { ErrorMessage = "Select repository to find stashes." };
+
+                var gitStartInfo = new ProcessStartInfo
+                {
+                    CreateNoWindow = true,
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    // TODO: refactor next statement. Create git helper for fetching git.exe path.
+                    FileName = GitPathHelper.GetGitPath(),
+                    Arguments = gitCommand,
+                    WorkingDirectory = activeRepository.RepositoryPath
+                };
+
+                using (var gitProcess = Process.Start(gitStartInfo))
+                {
+                    gitProcess.WaitForExit();
+
+                    return new GitCommandResult();
                 }
             }
             catch
