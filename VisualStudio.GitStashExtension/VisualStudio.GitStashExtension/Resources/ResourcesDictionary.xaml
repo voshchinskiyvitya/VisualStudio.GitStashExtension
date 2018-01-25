@@ -65,7 +65,7 @@
     <Style x:Key="TeamExplorerTreeViewStyle" TargetType="{x:Type TreeView}">
         <Setter Property="BorderThickness" Value="0"></Setter>
     </Style>
-    
+
     <Style x:Key="TeamExplorerTreeViewItemStyle" TargetType="{x:Type TreeViewItem}">
         <Setter Property="IsExpanded" Value="{Binding IsExpanded}"></Setter>
         <!--<Setter Property="Template">
@@ -111,12 +111,4 @@
             </Trigger>
         </Style.Triggers>-->
     </Style>
-
-    <HierarchicalDataTemplate x:Key="TeamExplorerTreeViewItemTemplate" DataType="{x:Type models:TreeViewItemWithIcon}" ItemsSource="{Binding Items}">
-        <StackPanel Orientation="Horizontal">
-            <Image Source="{Binding Source}" Width="16" Height="16"></Image>
-            <TextBlock FontSize="14" Text="{Binding Text}" Margin="5 0 0 0"></TextBlock>
-        </StackPanel>
-    </HierarchicalDataTemplate>
-
 </ResourceDictionary>

@@ -19,6 +19,11 @@ namespace VisualStudio.GitStashExtension.Models
         public string Text { get; set; }
 
         /// <summary>
+        /// Full path for current file or folder.
+        /// </summary>
+        public string FullPath { get; set; }
+
+        /// <summary>
         /// Icon source for file or folder.
         /// </summary>
         public BitmapSource Source

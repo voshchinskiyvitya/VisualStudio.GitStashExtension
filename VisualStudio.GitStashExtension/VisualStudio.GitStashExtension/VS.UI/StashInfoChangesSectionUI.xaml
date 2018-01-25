@@ -1,6 +1,7 @@
 ﻿<UserControl x:Class="VisualStudio.GitStashExtension.VS.UI.StashInfoChangesSectionUI"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:models="clr-namespace:VisualStudio.GitStashExtension.Models"
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch"
              HorizontalContentAlignment="Stretch"
@@ -13,12 +14,25 @@
     </UserControl.Resources>
 
     <Grid>
-        <TreeView ItemsSource="{Binding ChangeItems}" 
-                  ItemTemplate="{StaticResource TeamExplorerTreeViewItemTemplate}" 
+        <TreeView ItemsSource="{Binding ChangeItems}"  
                   ItemContainerStyle="{StaticResource TeamExplorerTreeViewItemStyle}"
                   Style="{StaticResource TeamExplorerTreeViewStyle}"
                   PreviewMouseWheel="PreviewMouseWheelForTreeView"
                   TreeViewItem.Expanded="TreeView_ExpandedOrCollapsed"
-                  TreeViewItem.Collapsed="TreeView_ExpandedOrCollapsed"></TreeView>
+                  TreeViewItem.Collapsed="TreeView_ExpandedOrCollapsed">
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type models:TreeViewItemWithIcon}" ItemsSource="{Binding Items}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{Binding Source}" Width="16" Height="16"></Image>
+                        <TextBlock FontSize="14" Text="{Binding Text}" Margin="5 0 0 0"></TextBlock>
+                        <StackPanel.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Compare with current..." Click="CompareFileMenuItem_Click" Tag="{Binding}"></MenuItem>
+                            </ContextMenu>
+                        </StackPanel.ContextMenu>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
     </Grid>
 </UserControl>

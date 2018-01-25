@@ -72,6 +72,7 @@ namespace VisualStudio.GitStashExtension.VS.UI
             var treeViewItem = new TreeViewItemWithIcon
             {
                 Text = node.Text,
+                FullPath = GetTreeViewNodeFullPath(node),
                 Source = icon,
                 IsExpanded = !isFile
             };
@@ -86,6 +87,19 @@ namespace VisualStudio.GitStashExtension.VS.UI
                 treeViewItem.Items.Add(ToTreeViewItem(child, child.Nodes.Count == 0));
             }
             return treeViewItem;
+        }
+
+        private string GetTreeViewNodeFullPath(TreeNode node)
+        {
+            var fullPath = string.Empty;
+            if (node.Parent != null && string.IsNullOrEmpty(node.Parent.Text))
+            {
+                fullPath += GetTreeViewNodeFullPath(node.Parent) + "/";
+            }
+
+            fullPath += node.Text;
+
+            return fullPath;
         }
     }
 }

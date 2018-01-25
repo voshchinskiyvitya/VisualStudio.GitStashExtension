@@ -50,5 +50,12 @@ namespace VisualStudio.GitStashExtension.VS.UI
                 itemWithIcon.Source = _fileIconsService.GetFolderIcon(item.IsExpanded);
             }
         }
+
+        private void CompareFileMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            var treeItem = menuItem?.Tag as TreeViewItemWithIcon;
+            var filePath = treeItem?.FullPath;
+        }
     }
 }
