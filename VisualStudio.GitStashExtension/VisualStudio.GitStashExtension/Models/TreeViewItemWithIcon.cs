@@ -42,6 +42,11 @@ namespace VisualStudio.GitStashExtension.Models
         public bool IsExpanded { get; set; }
 
         /// <summary>
+        /// Indicates whether current item is file.
+        /// </summary>
+        public bool IsFile { get; set; }
+
+        /// <summary>
         /// Child items.
         /// </summary>
         public IList<TreeViewItemWithIcon> Items { get; set; }

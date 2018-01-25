@@ -16,5 +16,7 @@
         public const string StashDeleteFormatted = "stash drop stash@{{{0}}}";
 
         public const string StashInfoFormatted = "stash show stash@{{{0}}} --name-only";
+
+        public const string StashFileDiffFormatted = "difftool -y stash@{{{0}}} -- {1}";
     }
 }

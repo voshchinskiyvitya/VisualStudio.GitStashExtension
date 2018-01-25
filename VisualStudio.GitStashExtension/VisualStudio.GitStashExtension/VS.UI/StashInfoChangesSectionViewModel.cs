@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
+using Microsoft.TeamFoundation.Controls;
 using VisualStudio.GitStashExtension.Annotations;
+using VisualStudio.GitStashExtension.GitHelpers;
 using VisualStudio.GitStashExtension.Models;
 using VisualStudio.GitStashExtension.Services;
 
@@ -13,12 +16,20 @@ namespace VisualStudio.GitStashExtension.VS.UI
     public class StashInfoChangesSectionViewModel: INotifyPropertyChanged
     {
         private readonly FileIconsService _fileIconsService;
+        private readonly Stash _stash;
+        private readonly GitCommandExecuter _gitCommandExecuter;
+        private readonly ITeamExplorer _teamExplorer;
         private ObservableCollection<TreeViewItemWithIcon> _changeItems;
+
+
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public StashInfoChangesSectionViewModel(Stash stash, FileIconsService fileIconsService)
+        public StashInfoChangesSectionViewModel(Stash stash, FileIconsService fileIconsService, GitCommandExecuter gitCommandExecuter, ITeamExplorer teamExplorer)
         {
             _fileIconsService = fileIconsService;
+            _gitCommandExecuter = gitCommandExecuter;
+            _teamExplorer = teamExplorer;
+            _stash = stash;
 
             if (stash == null)
                 return;
@@ -55,6 +66,18 @@ namespace VisualStudio.GitStashExtension.VS.UI
             }
         }
 
+        /// <summary>
+        /// Run file diff.
+        /// </summary>
+        /// <param name="filePath"></param>
+        public void RunDiff(string filePath)
+        {
+            if (!_gitCommandExecuter.TryRunFileDiff(_stash.Id, filePath, out var errorMessage))
+            {
+                _teamExplorer?.ShowNotification(errorMessage, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
+            }
+        }
+
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -74,7 +97,8 @@ namespace VisualStudio.GitStashExtension.VS.UI
                 Text = node.Text,
                 FullPath = GetTreeViewNodeFullPath(node),
                 Source = icon,
-                IsExpanded = !isFile
+                IsExpanded = !isFile,
+                IsFile = isFile
             };
 
             foreach (var child in node.Nodes.Cast<TreeNode>().ToList())
@@ -92,7 +116,7 @@ namespace VisualStudio.GitStashExtension.VS.UI
         private string GetTreeViewNodeFullPath(TreeNode node)
         {
             var fullPath = string.Empty;
-            if (node.Parent != null && string.IsNullOrEmpty(node.Parent.Text))
+            if (!string.IsNullOrEmpty(node.Parent?.Text))
             {
                 fullPath += GetTreeViewNodeFullPath(node.Parent) + "/";
             }

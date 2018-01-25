@@ -116,6 +116,29 @@ namespace VisualStudio.GitStashExtension.GitHelpers
             return true;
         }
 
+        /// <summary>
+        /// Runs file diff.
+        /// </summary>
+        /// <param name="id">Stash id.</param>
+        /// <param name="filePath">File project full path.</param>
+        /// <param name="errorMessage">Error message.</param>
+        /// <returns>Bool value that indicates whether command execution was succeeded.</returns>
+        public bool TryRunFileDiff(int id, string filePath, out string errorMessage)
+        {
+            var diffCommand = string.Format(GitCommandConstants.StashFileDiffFormatted, id, filePath);
+
+            var commandResult = Execute(diffCommand);
+
+            if (commandResult.IsError)
+            {
+                errorMessage = commandResult.ErrorMessage;
+                return false;
+            }
+
+            errorMessage = string.Empty;
+            return true;
+        }
+
         private GitCommandResult Execute(string gitCommand)
         {
             try

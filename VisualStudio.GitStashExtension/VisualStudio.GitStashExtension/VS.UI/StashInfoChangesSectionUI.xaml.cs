@@ -2,7 +2,9 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Microsoft.TeamFoundation.Controls;
 using Microsoft.VisualStudio.Shell.Interop;
+using VisualStudio.GitStashExtension.GitHelpers;
 using VisualStudio.GitStashExtension.Models;
 using VisualStudio.GitStashExtension.Services;
 
@@ -16,15 +18,20 @@ namespace VisualStudio.GitStashExtension.VS.UI
         private readonly IServiceProvider _serviceProvider;
         private readonly IVsImageService2 _vsImageService;
         private readonly FileIconsService _fileIconsService;
+        private readonly GitCommandExecuter _gitCommandExecuter;
+        private readonly ITeamExplorer _teamExplorer;
+        private readonly StashInfoChangesSectionViewModel _viewModel;
 
         public StashInfoChangesSectionUI(Stash stash, IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
             _vsImageService = _serviceProvider.GetService(typeof(SVsImageService)) as IVsImageService2;
             _fileIconsService = new FileIconsService(_vsImageService);
+            _gitCommandExecuter = new GitCommandExecuter(_serviceProvider);
+            _teamExplorer = _serviceProvider.GetService(typeof(ITeamExplorer)) as ITeamExplorer;
             InitializeComponent();
 
-            DataContext = new StashInfoChangesSectionViewModel(stash, _fileIconsService);
+            DataContext = _viewModel = new StashInfoChangesSectionViewModel(stash, _fileIconsService, _gitCommandExecuter, _teamExplorer);
         }
 
         private void PreviewMouseWheelForTreeView(object sender, MouseWheelEventArgs e)
@@ -56,6 +63,8 @@ namespace VisualStudio.GitStashExtension.VS.UI
             var menuItem = sender as MenuItem;
             var treeItem = menuItem?.Tag as TreeViewItemWithIcon;
             var filePath = treeItem?.FullPath;
+
+            _viewModel.RunDiff(filePath);
         }
     }
 }

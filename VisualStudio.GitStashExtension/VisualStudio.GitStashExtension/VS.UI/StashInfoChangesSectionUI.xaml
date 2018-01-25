@@ -28,6 +28,16 @@
                         <StackPanel.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Compare with current..." Click="CompareFileMenuItem_Click" Tag="{Binding}"></MenuItem>
+                                <ContextMenu.Style>
+                                    <Style TargetType="{x:Type ContextMenu}">
+                                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsFile}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"></Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ContextMenu.Style>
                             </ContextMenu>
                         </StackPanel.ContextMenu>
                     </StackPanel>
