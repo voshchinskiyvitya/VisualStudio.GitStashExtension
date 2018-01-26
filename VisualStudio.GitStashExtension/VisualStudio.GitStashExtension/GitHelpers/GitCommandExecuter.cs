@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using VisualStudio.GitStashExtension.Models;
 using Microsoft.VisualStudio.TeamFoundation.Git.Extensibility;
+using System.Threading.Tasks;
 
 namespace VisualStudio.GitStashExtension.GitHelpers
 {
@@ -127,11 +128,19 @@ namespace VisualStudio.GitStashExtension.GitHelpers
         {
             var diffCommand = string.Format(GitCommandConstants.StashFileDiffFormatted, id, filePath);
 
-            var commandResult = ExecuteWithoutResult(diffCommand);
+            var commandResult = Execute(diffCommand);
 
             if (commandResult.IsError)
             {
-                errorMessage = commandResult.ErrorMessage;
+                if (commandResult.ErrorMessage.Contains("Unknown merge tool vsdiffmerge"))
+                {
+                    errorMessage = "Cannot open Visual Studio diff tool." + Environment.NewLine +
+                                   "Please add path for vsDiffMerge.exe to git config file.";
+                }
+                else
+                {
+                    errorMessage = commandResult.ErrorMessage;
+                }
                 return false;
             }
 
@@ -153,7 +162,6 @@ namespace VisualStudio.GitStashExtension.GitHelpers
                     RedirectStandardError = true,
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
-                    // TODO: refactor next statement. Create git helper for fetching git.exe path.
                     FileName = GitPathHelper.GetGitPath(),
                     Arguments = gitCommand,
                     WorkingDirectory = activeRepository.RepositoryPath
@@ -161,49 +169,16 @@ namespace VisualStudio.GitStashExtension.GitHelpers
 
                 using (var gitProcess = Process.Start(gitStartInfo))
                 {
-                    var errorMessage = gitProcess.StandardError.ReadToEnd();
-                    var outputMessage = gitProcess.StandardOutput.ReadToEnd();
+                    var errorMessage = Task.Run(() => gitProcess.StandardError.ReadToEndAsync()); 
+                    var outputMessage = Task.Run(() => gitProcess.StandardOutput.ReadToEndAsync());
 
                     gitProcess.WaitForExit();
 
                     return new GitCommandResult
                     {
-                        OutputMessage = outputMessage,
-                        ErrorMessage = errorMessage
+                        OutputMessage = outputMessage.Result,
+                        ErrorMessage = errorMessage.Result
                     };
-                }
-            }
-            catch
-            {
-                return new GitCommandResult { ErrorMessage = "Unexpected error." };
-            }
-        }
-
-        private GitCommandResult ExecuteWithoutResult(string gitCommand)
-        {
-            try
-            {
-                var activeRepository = _gitService.ActiveRepositories.FirstOrDefault();
-                if (activeRepository == null)
-                    return new GitCommandResult { ErrorMessage = "Select repository to find stashes." };
-
-                var gitStartInfo = new ProcessStartInfo
-                {
-                    CreateNoWindow = true,
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    // TODO: refactor next statement. Create git helper for fetching git.exe path.
-                    FileName = GitPathHelper.GetGitPath(),
-                    Arguments = gitCommand,
-                    WorkingDirectory = activeRepository.RepositoryPath
-                };
-
-                using (var gitProcess = Process.Start(gitStartInfo))
-                {
-                    gitProcess.WaitForExit();
-
-                    return new GitCommandResult();
                 }
             }
             catch

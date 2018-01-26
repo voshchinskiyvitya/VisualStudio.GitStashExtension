@@ -27,7 +27,7 @@
                         <TextBlock FontSize="14" Text="{Binding Text}" Margin="5 0 0 0"></TextBlock>
                         <StackPanel.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Compare with current..." Click="CompareFileMenuItem_Click" Tag="{Binding}"></MenuItem>
+                                <MenuItem Header="Compare with previous" Click="CompareFileMenuItem_Click" Tag="{Binding}"></MenuItem>
                                 <ContextMenu.Style>
                                     <Style TargetType="{x:Type ContextMenu}">
                                         <Setter Property="Visibility" Value="Collapsed"></Setter>
