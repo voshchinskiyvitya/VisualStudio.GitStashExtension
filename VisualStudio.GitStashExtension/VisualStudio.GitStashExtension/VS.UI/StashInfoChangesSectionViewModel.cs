@@ -72,10 +72,12 @@ namespace VisualStudio.GitStashExtension.VS.UI
         /// <param name="filePath"></param>
         public void RunDiff(string filePath)
         {
-            if (!_gitCommandExecuter.TryRunFileDiff(_stash.Id, filePath, out var errorMessage))
+            var result = _gitCommandExecuter.TryRunFileDiff(_stash.Id, filePath);
+            result.ContinueWith(r =>
             {
-                _teamExplorer?.ShowNotification(errorMessage, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
-            }
+                if(r.Result.IsError)
+                    _teamExplorer?.ShowNotification(r.Result.ErrorMessage, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
+            });
         }
 
         [NotifyPropertyChangedInvocator]

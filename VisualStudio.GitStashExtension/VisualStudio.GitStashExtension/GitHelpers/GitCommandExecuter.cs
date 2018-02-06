@@ -122,30 +122,14 @@ namespace VisualStudio.GitStashExtension.GitHelpers
         /// </summary>
         /// <param name="id">Stash id.</param>
         /// <param name="filePath">File project full path.</param>
-        /// <param name="errorMessage">Error message.</param>
         /// <returns>Bool value that indicates whether command execution was succeeded.</returns>
-        public bool TryRunFileDiff(int id, string filePath, out string errorMessage)
+        public Task<GitCommandResult> TryRunFileDiff(int id, string filePath)
         {
             var diffCommand = string.Format(GitCommandConstants.StashFileDiffFormatted, id, filePath);
 
-            var commandResult = Execute(diffCommand);
+            var commandResult = ExecuteAsync(diffCommand);
 
-            if (commandResult.IsError)
-            {
-                if (commandResult.ErrorMessage.Contains("Unknown merge tool vsdiffmerge"))
-                {
-                    errorMessage = "Cannot open Visual Studio diff tool." + Environment.NewLine +
-                                   "Please add path for vsDiffMerge.exe to git config file.";
-                }
-                else
-                {
-                    errorMessage = commandResult.ErrorMessage;
-                }
-                return false;
-            }
-
-            errorMessage = string.Empty;
-            return true;
+            return commandResult;
         }
 
         private GitCommandResult Execute(string gitCommand)
@@ -184,6 +168,65 @@ namespace VisualStudio.GitStashExtension.GitHelpers
             catch
             {
                 return new GitCommandResult { ErrorMessage = "Unexpected error." };
+            }
+        }
+
+
+        private Task<GitCommandResult> ExecuteAsync(string gitCommand)
+        {
+            try
+            {
+                var activeRepository = _gitService.ActiveRepositories.FirstOrDefault();
+                if (activeRepository == null)
+                    return Task.FromResult(new GitCommandResult { ErrorMessage = "Select repository to find stashes." });
+
+                var gitStartInfo = new ProcessStartInfo
+                {
+                    CreateNoWindow = true,
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true,
+                    FileName = GitPathHelper.GetGitPath(),
+                    Arguments = gitCommand,
+                    UseShellExecute = false,
+                    WorkingDirectory = activeRepository.RepositoryPath
+                };
+
+                var tastCompletionSource = new TaskCompletionSource<GitCommandResult>();
+
+                var gitProcess = new Process
+                {
+                    StartInfo = gitStartInfo,
+                    EnableRaisingEvents = true
+                };
+
+                gitProcess.Exited += (sender, args) =>
+                {
+                    if (gitProcess.ExitCode != 0)
+                    {
+                        var error = gitProcess.StandardError.ReadToEnd();
+                        tastCompletionSource.SetResult(new GitCommandResult
+                        {
+                            ErrorMessage = error
+                        });
+                    }
+                    else
+                    {
+                        var output = gitProcess.StandardOutput.ReadToEnd();
+                        tastCompletionSource.SetResult(new GitCommandResult
+                        {
+                            OutputMessage = output
+                        });
+                    }
+                };
+
+                gitProcess.Start();
+
+                return tastCompletionSource.Task;
+
+            }
+            catch
+            {
+                return Task.FromResult(new GitCommandResult { ErrorMessage = "Unexpected error." });
             }
         }
     }
