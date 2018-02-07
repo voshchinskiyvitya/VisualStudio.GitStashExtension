@@ -77,11 +77,14 @@ namespace VisualStudio.GitStashExtension.VS.UI
             if (e.ClickCount == 2)
             {
                 var listItem = sender as TextBlock;
-                var stashId = listItem.Tag as int?;
+                var stash = listItem.Tag as Stash;
 
-                if (stashId.HasValue)
+                var stashInfo = _viewModel.GetStashInfo(stash.Id);
+
+                if (stashInfo != null)
                 {
-                    _viewModel.ApplyStash(stashId.Value);
+                    stash.ChangedFiles = stashInfo.ChangedFiles;
+                    _teamExplorer.NavigateToPage(new Guid(Constants.StashInfoPageId), stash);
                 }
             }
         }

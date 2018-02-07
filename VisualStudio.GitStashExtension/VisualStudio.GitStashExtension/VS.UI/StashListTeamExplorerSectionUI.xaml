@@ -35,7 +35,7 @@
 
 			<ListBox.ItemTemplate>
 				<DataTemplate>
-					<TextBlock Text="{Binding Message}" MouseDown="ListItem_MouseDown" Tag="{Binding Id}">
+					<TextBlock Text="{Binding Message}" MouseDown="ListItem_MouseDown" Tag="{Binding}">
 						<TextBlock.ContextMenu>
 							<ContextMenu>
                                 <MenuItem Header="Stash info" Click="StashInfoMenuItem_Click" Tag="{Binding}"></MenuItem>
