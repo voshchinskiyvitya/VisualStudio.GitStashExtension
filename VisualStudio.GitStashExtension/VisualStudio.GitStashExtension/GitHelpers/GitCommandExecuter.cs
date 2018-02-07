@@ -5,6 +5,7 @@ using System.Linq;
 using VisualStudio.GitStashExtension.Models;
 using Microsoft.VisualStudio.TeamFoundation.Git.Extensibility;
 using System.Threading.Tasks;
+using VisualStudio.GitStashExtension.VSHelpers;
 
 namespace VisualStudio.GitStashExtension.GitHelpers
 {
@@ -122,10 +123,15 @@ namespace VisualStudio.GitStashExtension.GitHelpers
         /// </summary>
         /// <param name="id">Stash id.</param>
         /// <param name="filePath">File project full path.</param>
-        /// <returns>Bool value that indicates whether command execution was succeeded.</returns>
-        public Task<GitCommandResult> TryRunFileDiff(int id, string filePath)
+        /// <returns>Task with GitCommandResult model.</returns>
+        public Task<GitCommandResult> RunFileDiffAsync(int id, string filePath)
         {
-            var diffCommand = string.Format(GitCommandConstants.StashFileDiffFormatted, id, filePath);
+            var vsDiffToolPath = VisualStudioPathHelper.GetVsDiffMergeToolPath();
+
+            if(string.IsNullOrEmpty(vsDiffToolPath))
+                return Task.FromResult(new GitCommandResult { ErrorMessage = Constants.DiffToolErrorMessage });
+
+            var diffCommand = string.Format(GitCommandConstants.StashFileDiffFormatted, vsDiffToolPath, id, filePath);
 
             var commandResult = ExecuteAsync(diffCommand);
 
@@ -138,7 +144,7 @@ namespace VisualStudio.GitStashExtension.GitHelpers
             {
                 var activeRepository = _gitService.ActiveRepositories.FirstOrDefault();
                 if (activeRepository == null)
-                    return new GitCommandResult {ErrorMessage = "Select repository to find stashes."};
+                    return new GitCommandResult {ErrorMessage = Constants.UnknownRepositoryErrorMessage };
 
                 var gitStartInfo = new ProcessStartInfo
                 {
@@ -167,7 +173,7 @@ namespace VisualStudio.GitStashExtension.GitHelpers
             }
             catch
             {
-                return new GitCommandResult { ErrorMessage = "Unexpected error." };
+                return new GitCommandResult { ErrorMessage = Constants.UnexpectedErrorMessage };
             }
         }
 
@@ -178,7 +184,7 @@ namespace VisualStudio.GitStashExtension.GitHelpers
             {
                 var activeRepository = _gitService.ActiveRepositories.FirstOrDefault();
                 if (activeRepository == null)
-                    return Task.FromResult(new GitCommandResult { ErrorMessage = "Select repository to find stashes." });
+                    return Task.FromResult(new GitCommandResult { ErrorMessage = Constants.UnknownRepositoryErrorMessage });
 
                 var gitStartInfo = new ProcessStartInfo
                 {
@@ -226,7 +232,7 @@ namespace VisualStudio.GitStashExtension.GitHelpers
             }
             catch
             {
-                return Task.FromResult(new GitCommandResult { ErrorMessage = "Unexpected error." });
+                return Task.FromResult(new GitCommandResult { ErrorMessage = Constants.UnexpectedErrorMessage });
             }
         }
     }

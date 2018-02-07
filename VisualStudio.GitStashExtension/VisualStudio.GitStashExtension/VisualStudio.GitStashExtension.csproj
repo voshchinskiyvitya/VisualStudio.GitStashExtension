@@ -85,6 +85,7 @@
     <Compile Include="VS.UI\StashListTeamExplorerSectionUI.xaml.cs">
       <DependentUpon>StashListTeamExplorerSectionUI.xaml</DependentUpon>
     </Compile>
+    <Compile Include="VSHelpers\VisualStudioPathHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

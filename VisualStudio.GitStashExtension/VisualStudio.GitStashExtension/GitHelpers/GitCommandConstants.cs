@@ -17,6 +17,6 @@
 
         public const string StashInfoFormatted = "stash show stash@{{{0}}} --name-only";
 
-        public const string StashFileDiffFormatted = "difftool -y -t vsdiffmerge stash@{{{0}}}^ stash@{{{0}}} -- {1}";
+        public const string StashFileDiffFormatted = "difftool --trust-exit-code -y -x \"'{0}' //t\" stash@{{{1}}}^^ stash@{{{1}}} -- {2}";
     }
 }

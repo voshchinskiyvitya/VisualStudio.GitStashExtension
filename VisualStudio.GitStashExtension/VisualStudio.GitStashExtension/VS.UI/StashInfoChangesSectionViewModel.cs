@@ -72,7 +72,7 @@ namespace VisualStudio.GitStashExtension.VS.UI
         /// <param name="filePath"></param>
         public void RunDiff(string filePath)
         {
-            var result = _gitCommandExecuter.TryRunFileDiff(_stash.Id, filePath);
+            var result = _gitCommandExecuter.RunFileDiffAsync(_stash.Id, filePath);
             result.ContinueWith(r =>
             {
                 if(r.Result.IsError)

@@ -26,5 +26,13 @@ namespace VisualStudio.GitStashExtension
         public const string StashesInfoChangesSectionLabel = "Files";
 
         public static Color NavigationItemColorArgb = Color.FromArgb(0, 213, 66);  // green
+
+        public const string UnknownRepositoryErrorMessage = "Select repository to find stashes.";
+
+        public const string UnexpectedErrorMessage = "Unexpected error.";
+
+        public const string DiffToolErrorMessage = "Can't run vsDiffMerge.exe to compare files. \n" +
+                                                   "Please check tool install path: \n" +
+                                                   "%visual_studio_install-dir%Common7\\IDE\\CommonExtensions\\Microsoft\\TeamFoundation\\Team Explorer\\vsDiffMerge.exe";
     }
 }
