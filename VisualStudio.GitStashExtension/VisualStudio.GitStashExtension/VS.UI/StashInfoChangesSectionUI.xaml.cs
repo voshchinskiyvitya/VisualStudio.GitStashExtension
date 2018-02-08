@@ -52,7 +52,8 @@ namespace VisualStudio.GitStashExtension.VS.UI
         private void TreeView_ExpandedOrCollapsed(object sender, RoutedEventArgs e)
         {
             var item = e.OriginalSource as TreeViewItem;
-            if (item?.DataContext is TreeViewItemWithIcon itemWithIcon)
+            if (item?.DataContext is TreeViewItemWithIcon itemWithIcon && 
+                !itemWithIcon.IsFile)
             {
                 itemWithIcon.Source = _fileIconsService.GetFolderIcon(item.IsExpanded);
             }
