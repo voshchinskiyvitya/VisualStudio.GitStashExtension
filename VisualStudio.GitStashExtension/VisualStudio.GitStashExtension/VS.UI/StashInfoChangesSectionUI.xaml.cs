@@ -20,6 +20,7 @@ namespace VisualStudio.GitStashExtension.VS.UI
         private readonly FileIconsService _fileIconsService;
         private readonly GitCommandExecuter _gitCommandExecuter;
         private readonly ITeamExplorer _teamExplorer;
+        private readonly IVsDifferenceService _vsDiffService;
         private readonly StashInfoChangesSectionViewModel _viewModel;
 
         public StashInfoChangesSectionUI(Stash stash, IServiceProvider serviceProvider)
@@ -29,9 +30,10 @@ namespace VisualStudio.GitStashExtension.VS.UI
             _fileIconsService = new FileIconsService(_vsImageService);
             _gitCommandExecuter = new GitCommandExecuter(_serviceProvider);
             _teamExplorer = _serviceProvider.GetService(typeof(ITeamExplorer)) as ITeamExplorer;
+            _vsDiffService = _serviceProvider.GetService(typeof(SVsDifferenceService)) as IVsDifferenceService;
             InitializeComponent();
 
-            DataContext = _viewModel = new StashInfoChangesSectionViewModel(stash, _fileIconsService, _gitCommandExecuter, _teamExplorer);
+            DataContext = _viewModel = new StashInfoChangesSectionViewModel(stash, _fileIconsService, _gitCommandExecuter, _teamExplorer, _vsDiffService);
         }
 
         private void PreviewMouseWheelForTreeView(object sender, MouseWheelEventArgs e)

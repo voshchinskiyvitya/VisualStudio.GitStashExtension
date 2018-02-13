@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using Microsoft.TeamFoundation.Controls;
+using Microsoft.VisualStudio.Shell.Interop;
 using VisualStudio.GitStashExtension.Annotations;
 using VisualStudio.GitStashExtension.GitHelpers;
 using VisualStudio.GitStashExtension.Models;
@@ -19,16 +21,18 @@ namespace VisualStudio.GitStashExtension.VS.UI
         private readonly Stash _stash;
         private readonly GitCommandExecuter _gitCommandExecuter;
         private readonly ITeamExplorer _teamExplorer;
+        private readonly IVsDifferenceService _vsDiffService;
         private ObservableCollection<TreeViewItemWithIcon> _changeItems;
 
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public StashInfoChangesSectionViewModel(Stash stash, FileIconsService fileIconsService, GitCommandExecuter gitCommandExecuter, ITeamExplorer teamExplorer)
+        public StashInfoChangesSectionViewModel(Stash stash, FileIconsService fileIconsService, GitCommandExecuter gitCommandExecuter, ITeamExplorer teamExplorer, IVsDifferenceService vsDiffService)
         {
             _fileIconsService = fileIconsService;
             _gitCommandExecuter = gitCommandExecuter;
             _teamExplorer = teamExplorer;
+            _vsDiffService = vsDiffService;
             _stash = stash;
 
             if (stash == null)
@@ -69,15 +73,39 @@ namespace VisualStudio.GitStashExtension.VS.UI
         /// <summary>
         /// Run file diff.
         /// </summary>
-        /// <param name="filePath"></param>
+        /// <param name="filePath">File path.</param>
         public void RunDiff(string filePath)
         {
-            var result = _gitCommandExecuter.RunFileDiffAsync(_stash.Id, filePath);
-            result.ContinueWith(r =>
+            var beforeTempPath = Path.GetTempFileName();
+            var afterTempPath = Path.GetTempFileName();
+
+            try
             {
-                if(r.Result.IsError)
-                    _teamExplorer?.ShowNotification(r.Result.ErrorMessage, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
-            });
+
+                if (!_gitCommandExecuter.TrySaveFileBeforeStashVersion(_stash.Id, filePath, beforeTempPath, out var errorMessage))
+                {
+                    _teamExplorer?.ShowNotification(errorMessage, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
+                    return;
+                }
+
+                if (!_gitCommandExecuter.TrySaveFileAfterStashVersion(_stash.Id, filePath, afterTempPath, out errorMessage))
+                {
+                    _teamExplorer?.ShowNotification(errorMessage, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
+                    return;
+                }
+
+                _vsDiffService.OpenComparisonWindow2(beforeTempPath, afterTempPath, "Stash diff", "", "", "", "", "", 0);
+
+            }
+            catch
+            {
+                _teamExplorer?.ShowNotification(Constants.UnexpectedErrorMessage, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
+            }
+            finally
+            {
+                File.Delete(beforeTempPath);
+                File.Delete(afterTempPath);
+            }
         }
 
         [NotifyPropertyChangedInvocator]

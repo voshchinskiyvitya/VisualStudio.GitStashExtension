@@ -5,7 +5,6 @@ using System.Linq;
 using VisualStudio.GitStashExtension.Models;
 using Microsoft.VisualStudio.TeamFoundation.Git.Extensibility;
 using System.Threading.Tasks;
-using VisualStudio.GitStashExtension.VSHelpers;
 
 namespace VisualStudio.GitStashExtension.GitHelpers
 {
@@ -119,24 +118,53 @@ namespace VisualStudio.GitStashExtension.GitHelpers
         }
 
         /// <summary>
-        /// Runs file diff.
+        /// Saves temp file after stash version of specific file.
         /// </summary>
         /// <param name="id">Stash id.</param>
-        /// <param name="filePath">File project full path.</param>
-        /// <returns>Task with GitCommandResult model.</returns>
-        public Task<GitCommandResult> RunFileDiffAsync(int id, string filePath)
+        /// <param name="filePath">Path to the specific file.</param>
+        /// <param name="pathToSave">Path for saving temp file.</param>
+        /// <param name="errorMessage">Error message.</param>
+        /// <returns>Bool value that indicates whether command execution was succeeded.</returns>
+        public bool TrySaveFileAfterStashVersion(int id, string filePath, string pathToSave, out string errorMessage)
         {
-            var vsDiffToolPath = VisualStudioPathHelper.GetVsDiffMergeToolPath();
+            var afterFileCreateCommand = string.Format(GitCommandConstants.AfterStashFileVersionSaveTempFormatted, id, filePath, pathToSave);
 
-            if(string.IsNullOrEmpty(vsDiffToolPath))
-                return Task.FromResult(new GitCommandResult { ErrorMessage = Constants.DiffToolErrorMessage });
+            var commandResult = Execute(afterFileCreateCommand);
 
-            var diffCommand = string.Format(GitCommandConstants.StashFileDiffFormatted, vsDiffToolPath, id, filePath);
+            if (commandResult.IsError)
+            {
+                errorMessage = commandResult.ErrorMessage;
+                return false;
+            }
 
-            var commandResult = ExecuteAsync(diffCommand);
-
-            return commandResult;
+            errorMessage = string.Empty;
+            return true;
         }
+
+        /// <summary>
+        /// Saves temp file before stash version of specific file.
+        /// </summary>
+        /// <param name="id">Stash id.</param>
+        /// <param name="filePath">Path to the specific file.</param>
+        /// <param name="pathToSave">Path for saving temp file.</param>
+        /// <param name="errorMessage">Error message.</param>
+        /// <returns>Bool value that indicates whether command execution was succeeded.</returns>
+        public bool TrySaveFileBeforeStashVersion(int id, string filePath, string pathToSave, out string errorMessage)
+        {
+            var beforeFileCreateCommand = string.Format(GitCommandConstants.BeforeStashFileVersionSaveTempFormatted, id, filePath, pathToSave);
+
+            var commandResult = Execute(beforeFileCreateCommand);
+
+            if (commandResult.IsError)
+            {
+                errorMessage = commandResult.ErrorMessage;
+                return false;
+            }
+
+            errorMessage = string.Empty;
+            return true;
+        }
+
 
         private GitCommandResult Execute(string gitCommand)
         {
@@ -146,14 +174,16 @@ namespace VisualStudio.GitStashExtension.GitHelpers
                 if (activeRepository == null)
                     return new GitCommandResult {ErrorMessage = Constants.UnknownRepositoryErrorMessage };
 
+                var cmdCommand = "/C \"" + GitPathHelper.GetGitPath() + "\" " + gitCommand;
+
                 var gitStartInfo = new ProcessStartInfo
                 {
                     CreateNoWindow = true,
                     RedirectStandardError = true,
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
-                    FileName = GitPathHelper.GetGitPath(),
-                    Arguments = gitCommand,
+                    FileName = "cmd.exe",
+                    Arguments = cmdCommand,
                     WorkingDirectory = activeRepository.RepositoryPath
                 };
 
@@ -177,63 +207,5 @@ namespace VisualStudio.GitStashExtension.GitHelpers
             }
         }
 
-
-        private Task<GitCommandResult> ExecuteAsync(string gitCommand)
-        {
-            try
-            {
-                var activeRepository = _gitService.ActiveRepositories.FirstOrDefault();
-                if (activeRepository == null)
-                    return Task.FromResult(new GitCommandResult { ErrorMessage = Constants.UnknownRepositoryErrorMessage });
-
-                var gitStartInfo = new ProcessStartInfo
-                {
-                    CreateNoWindow = true,
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true,
-                    FileName = GitPathHelper.GetGitPath(),
-                    Arguments = gitCommand,
-                    UseShellExecute = false,
-                    WorkingDirectory = activeRepository.RepositoryPath
-                };
-
-                var tastCompletionSource = new TaskCompletionSource<GitCommandResult>();
-
-                var gitProcess = new Process
-                {
-                    StartInfo = gitStartInfo,
-                    EnableRaisingEvents = true
-                };
-
-                gitProcess.Exited += (sender, args) =>
-                {
-                    if (gitProcess.ExitCode != 0)
-                    {
-                        var error = gitProcess.StandardError.ReadToEnd();
-                        tastCompletionSource.SetResult(new GitCommandResult
-                        {
-                            ErrorMessage = error
-                        });
-                    }
-                    else
-                    {
-                        var output = gitProcess.StandardOutput.ReadToEnd();
-                        tastCompletionSource.SetResult(new GitCommandResult
-                        {
-                            OutputMessage = output
-                        });
-                    }
-                };
-
-                gitProcess.Start();
-
-                return tastCompletionSource.Task;
-
-            }
-            catch
-            {
-                return Task.FromResult(new GitCommandResult { ErrorMessage = Constants.UnexpectedErrorMessage });
-            }
-        }
     }
 }
