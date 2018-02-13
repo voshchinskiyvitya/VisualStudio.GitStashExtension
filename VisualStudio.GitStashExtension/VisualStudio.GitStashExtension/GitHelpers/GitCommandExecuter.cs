@@ -174,7 +174,8 @@ namespace VisualStudio.GitStashExtension.GitHelpers
                 if (activeRepository == null)
                     return new GitCommandResult {ErrorMessage = Constants.UnknownRepositoryErrorMessage };
 
-                var cmdCommand = "/C \"" + GitPathHelper.GetGitPath() + "\" " + gitCommand;
+                var gitExePath = GitPathHelper.GetGitPath();
+                var cmdCommand = "/C \"\"" + (gitExePath ?? "git.exe") + "\" " + gitCommand + "\"";
 
                 var gitStartInfo = new ProcessStartInfo
                 {

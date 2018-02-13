@@ -19,8 +19,8 @@
 
         public const string StashFileDiffFormatted = "difftool --trust-exit-code -y -x \"'{0}' //t\" stash@{{{1}}}^^ stash@{{{1}}} -- {2}";
 
-        public const string AfterStashFileVersionSaveTempFormatted = "show stash@{{{0}}}:{1} > {2}";
+        public const string AfterStashFileVersionSaveTempFormatted = "show stash@{{{0}}}:\"{1}\" > {2}";
 
-        public const string BeforeStashFileVersionSaveTempFormatted = "show stash@{{{0}}}^^:{1} > {2}";
+        public const string BeforeStashFileVersionSaveTempFormatted = "show stash@{{{0}}}^^:\"{1}\" > {2}";
     }
 }
