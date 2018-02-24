@@ -20,7 +20,7 @@ namespace VisualStudio.GitStashExtension.GitHelpers
             if (!string.IsNullOrEmpty(gitPath))
                 return GetGitExeFilePath(gitPath);
 
-            gitPath = GetGitPathFromProgramFiles();
+            gitPath = GetGitPathFromRegistryValues();
 
             return GetGitExeFilePath(gitPath);
         }
