@@ -74,7 +74,8 @@ namespace VisualStudio.GitStashExtension.VS.UI
         /// Run file diff.
         /// </summary>
         /// <param name="filePath">File path.</param>
-        public void RunDiff(string filePath)
+        /// <param name="fileName">File name.</param>
+        public void RunDiff(string filePath, string fileName)
         {
             var beforeTempPath = Path.GetTempFileName();
             var afterTempPath = Path.GetTempFileName();
@@ -94,7 +95,7 @@ namespace VisualStudio.GitStashExtension.VS.UI
                     return;
                 }
 
-                _vsDiffService.OpenComparisonWindow2(beforeTempPath, afterTempPath, "Stash diff", "", "", "", "", "", 0);
+                _vsDiffService.OpenComparisonWindow2(beforeTempPath, afterTempPath, fileName + " stash diff", "Stash diff", fileName + " before stash", fileName + " after stash", "Stash file content", "", 0);
 
             }
             catch
