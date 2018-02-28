@@ -12,6 +12,7 @@ using VisualStudio.GitStashExtension.Annotations;
 using VisualStudio.GitStashExtension.GitHelpers;
 using VisualStudio.GitStashExtension.Models;
 using VisualStudio.GitStashExtension.Services;
+using Log = VisualStudio.GitStashExtension.Logger.Logger;
 
 namespace VisualStudio.GitStashExtension.VS.UI
 {
@@ -98,9 +99,10 @@ namespace VisualStudio.GitStashExtension.VS.UI
                 _vsDiffService.OpenComparisonWindow2(beforeTempPath, afterTempPath, fileName + " stash diff", "Stash diff", fileName + " before stash", fileName + " after stash", "Stash file content", "", 0);
 
             }
-            catch
+            catch(Exception e)
             {
-                _teamExplorer?.ShowNotification(Constants.UnexpectedErrorMessage, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
+                Log.LogException(e);
+                _teamExplorer?.ShowNotification(Constants.UnexpectedErrorMessage + Environment.NewLine + $"Find error info in {Log.GetLogFilePath()}", NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
             }
             finally
             {

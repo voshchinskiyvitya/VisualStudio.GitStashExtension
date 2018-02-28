@@ -5,6 +5,7 @@ using System.Linq;
 using VisualStudio.GitStashExtension.Models;
 using Microsoft.VisualStudio.TeamFoundation.Git.Extensibility;
 using System.Threading.Tasks;
+using Log = VisualStudio.GitStashExtension.Logger.Logger;
 
 namespace VisualStudio.GitStashExtension.GitHelpers
 {
@@ -200,9 +201,10 @@ namespace VisualStudio.GitStashExtension.GitHelpers
                     };
                 }
             }
-            catch
+            catch (Exception e)
             {
-                return new GitCommandResult { ErrorMessage = Constants.UnexpectedErrorMessage };
+                Log.LogException(e);
+                return new GitCommandResult { ErrorMessage = Constants.UnexpectedErrorMessage + Environment.NewLine + $"Find error info in {Log.GetLogFilePath()}" };
             }
         }
 
@@ -247,9 +249,10 @@ namespace VisualStudio.GitStashExtension.GitHelpers
                     };
                 }
             }
-            catch
+            catch(Exception e)
             {
-                return new GitCommandResult { ErrorMessage = Constants.UnexpectedErrorMessage };
+                Log.LogException(e);
+                return new GitCommandResult { ErrorMessage = Constants.UnexpectedErrorMessage + Environment.NewLine + $"Find error info in {Log.GetLogFilePath()}" };
             }
         }
 
