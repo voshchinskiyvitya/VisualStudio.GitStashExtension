@@ -129,7 +129,7 @@ namespace VisualStudio.GitStashExtension.GitHelpers
         {
             var afterFileCreateCommand = string.Format(GitCommandConstants.AfterStashFileVersionSaveTempFormatted, id, filePath, pathToSave);
 
-            var commandResult = Execute(afterFileCreateCommand);
+            var commandResult = ExecuteWithCmd(afterFileCreateCommand);
 
             if (commandResult.IsError)
             {
@@ -153,7 +153,7 @@ namespace VisualStudio.GitStashExtension.GitHelpers
         {
             var beforeFileCreateCommand = string.Format(GitCommandConstants.BeforeStashFileVersionSaveTempFormatted, id, filePath, pathToSave);
 
-            var commandResult = Execute(beforeFileCreateCommand);
+            var commandResult = ExecuteWithCmd(beforeFileCreateCommand);
 
             if (commandResult.IsError)
             {
@@ -165,8 +165,53 @@ namespace VisualStudio.GitStashExtension.GitHelpers
             return true;
         }
 
-
         private GitCommandResult Execute(string gitCommand)
+        {
+            try
+            {
+                var activeRepository = _gitService.ActiveRepositories.FirstOrDefault();
+                if (activeRepository == null)
+                    return new GitCommandResult { ErrorMessage = Constants.UnknownRepositoryErrorMessage };
+
+                var gitExePath = GitPathHelper.GetGitPath();
+
+                var gitStartInfo = new ProcessStartInfo
+                {
+                    CreateNoWindow = true,
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    FileName = (gitExePath ?? "git.exe"),
+                    Arguments = gitCommand,
+                    WorkingDirectory = activeRepository.RepositoryPath
+                };
+
+                using (var gitProcess = Process.Start(gitStartInfo))
+                {
+                    var errorMessage = Task.Run(() => gitProcess.StandardError.ReadToEndAsync());
+                    var outputMessage = Task.Run(() => gitProcess.StandardOutput.ReadToEndAsync());
+
+                    gitProcess.WaitForExit();
+
+                    return new GitCommandResult
+                    {
+                        OutputMessage = outputMessage.Result,
+                        ErrorMessage = errorMessage.Result
+                    };
+                }
+            }
+            catch
+            {
+                return new GitCommandResult { ErrorMessage = Constants.UnexpectedErrorMessage };
+            }
+        }
+
+        /// <summary>
+        /// This method is a part of new functionality. To save backward compatibility previous implementation was left.
+        /// </summary>
+        /// <param name="gitCommand"></param>
+        /// <returns></returns>
+        private GitCommandResult ExecuteWithCmd(string gitCommand)
         {
             try
             {
