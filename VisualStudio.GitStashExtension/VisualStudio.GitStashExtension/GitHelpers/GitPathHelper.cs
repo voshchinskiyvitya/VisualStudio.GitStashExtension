@@ -30,7 +30,7 @@ namespace VisualStudio.GitStashExtension.GitHelpers
             string gitPath;
             if (Environment.Is64BitOperatingSystem)
             {
-                var programFilesx64 = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion", "ProgramW6432Dir", string.Empty).ToString();
+                var programFilesx64 = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion", "ProgramW6432Dir", string.Empty)?.ToString();
                 if (!string.IsNullOrEmpty(programFilesx64))
                 {
                     gitPath = programFilesx64 + @"\git";
@@ -45,11 +45,11 @@ namespace VisualStudio.GitStashExtension.GitHelpers
 
         public static string GetGitPathFromRegistryValues()
         {
-            var gitPath = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Git_is1", "InstallLocation", string.Empty).ToString();
+            var gitPath = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Git_is1", "InstallLocation", string.Empty)?.ToString();
             if(!string.IsNullOrEmpty(gitPath))
                 return Directory.Exists(gitPath) ? gitPath : string.Empty;
 
-            gitPath = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Git_is1", "InstallLocation", string.Empty).ToString();
+            gitPath = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Git_is1", "InstallLocation", string.Empty)?.ToString();
             if (!string.IsNullOrEmpty(gitPath))
                 return Directory.Exists(gitPath) ? gitPath : string.Empty;
 
