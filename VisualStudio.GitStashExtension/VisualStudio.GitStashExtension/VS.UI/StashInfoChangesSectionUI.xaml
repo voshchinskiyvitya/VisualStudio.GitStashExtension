@@ -15,8 +15,8 @@
 
     <Grid>
         <TreeView ItemsSource="{Binding ChangeItems}"  
-                  ItemContainerStyle="{StaticResource TeamExplorerTreeViewItemStyle}"
-                  Style="{StaticResource TeamExplorerTreeViewStyle}"
+                  Style="{DynamicResource TeamExplorerTreeViewStyle}"
+                  ItemContainerStyle="{DynamicResource TeamExplorerTreeViewItemStyle}"
                   PreviewMouseWheel="PreviewMouseWheelForTreeView"
                   TreeViewItem.Expanded="TreeView_ExpandedOrCollapsed"
                   TreeViewItem.Collapsed="TreeView_ExpandedOrCollapsed">
@@ -24,22 +24,13 @@
                 <HierarchicalDataTemplate DataType="{x:Type models:TreeViewItemWithIcon}" ItemsSource="{Binding Items}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding Source}" Width="16" Height="16"></Image>
-                        <TextBlock FontSize="14" Text="{Binding Text}" Margin="5 0 0 0"></TextBlock>
-                        <StackPanel.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="Compare with previous" Click="CompareFileMenuItem_Click" Tag="{Binding}"></MenuItem>
-                                <ContextMenu.Style>
-                                    <Style TargetType="{x:Type ContextMenu}">
-                                        <Setter Property="Visibility" Value="Collapsed"></Setter>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsFile}" Value="True">
-                                                <Setter Property="Visibility" Value="Visible"></Setter>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ContextMenu.Style>
-                            </ContextMenu>
-                        </StackPanel.ContextMenu>
+                        <TextBlock FontSize="14" Text="{Binding Text}" Margin="5 0 0 0">
+                            <TextBlock.ContextMenu>
+                                <ContextMenu Style="{DynamicResource ChangedFileContextMenuStyle}">
+                                    <MenuItem Header="Compare with previous" Click="CompareFileMenuItem_Click" Tag="{Binding}"></MenuItem>
+                                </ContextMenu>
+                            </TextBlock.ContextMenu>
+                        </TextBlock>
                     </StackPanel>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
