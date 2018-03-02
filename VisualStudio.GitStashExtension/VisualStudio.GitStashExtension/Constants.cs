@@ -19,7 +19,7 @@ namespace VisualStudio.GitStashExtension
 
         public const string StashesLabel = "Stashes";
 
-        public const string StashesInfoLabel = "Stashe Info";
+        public const string StashesInfoLabel = "Stashes Info";
 
         public const string StashesListSectionLabel = "Stash list";
 

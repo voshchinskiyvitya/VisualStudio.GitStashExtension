@@ -72,6 +72,9 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
         {
             IsVisible = propertyChangedEventArgs.PropertyName == nameof(_gitService.ActiveRepositories) &&
                         _gitService.AnyActiveRepository();
+
+            if(IsVisible)
+                _teamExplorer.CurrentPage.Refresh();
         }
     }
 }
