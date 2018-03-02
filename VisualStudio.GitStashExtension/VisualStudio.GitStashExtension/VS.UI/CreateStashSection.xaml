@@ -15,10 +15,10 @@
 		<ResourceDictionary Source="/VisualStudio.GitStashExtension;component/Resources/ResourcesDictionary.xaml" />
 	</UserControl.Resources>
 
-	<Grid>
-		<Border BorderThickness="1" BorderBrush="{StaticResource TextBoxBorderColor}" VerticalAlignment="Top" Margin="15 10 10 10" Height="22">
-            <TextBox x:Name="MessageTextBox" Height="16" Text="{Binding Message}" BorderThickness="0" Margin="0 3 0 3" Style="{DynamicResource TextBoxStyle}"></TextBox>
+	<StackPanel Orientation="Vertical" Margin="0 0 0 10">
+		<Border BorderThickness="1" BorderBrush="{StaticResource TextBoxBorderColor}" VerticalAlignment="Top" Margin="15 10 10 10">
+            <TextBox x:Name="MessageTextBox" Text="{Binding Message}" BorderThickness="0" Margin="0 3 0 3" Style="{DynamicResource TextBoxStyle}"></TextBox>
 		</Border>
-		<Button x:Name="CreateStashButton" Click="CreateStashButton_Click" Content="Create stash" Width="100" Height="20" Margin="15 40 10 10" HorizontalAlignment="Left"></Button>
-	</Grid>
+		<Button x:Name="CreateStashButton" Click="CreateStashButton_Click" Content="Create stash" Width="auto" Height="Auto" Padding="5" Margin="15 5 5 5" HorizontalAlignment="Left"></Button>
+	</StackPanel>
 </UserControl>

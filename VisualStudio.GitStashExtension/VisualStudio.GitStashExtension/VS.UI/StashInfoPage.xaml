@@ -10,11 +10,18 @@
              VerticalContentAlignment="Stretch"
              Height="auto"
              Width="auto">
-    <Grid Margin="15 10 15 10">
-        <TextBlock Text="Stash #" FontSize="20" FontWeight="Bold"></TextBlock>
-        <TextBlock Text="{Binding Stash.Id}" FontSize="20" FontWeight="Bold" Margin="70 0 0 60"></TextBlock>
-        <TextBlock Text="{Binding Stash.Message}" Margin="0 30 0 30" FontSize="18"></TextBlock>
-        <TextBlock Text="On branch:   " Margin="0 60 0 0"></TextBlock>
-        <TextBlock Text="{Binding Stash.BranchName}" Margin="60 60 0 0"></TextBlock>
-    </Grid>
+    <StackPanel Margin="15 10 0 10" Orientation="Vertical">
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Stash #" FontSize="22" FontWeight="Bold"></TextBlock>
+            <TextBlock Text="{Binding Stash.Id}" FontSize="22" FontWeight="Bold"></TextBlock>
+        </StackPanel>
+        <TextBlock Text="{Binding Stash.Message}" Margin="0 10 0 10" FontSize="18"></TextBlock>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="On branch: "></TextBlock>
+            <TextBlock Text="{Binding Stash.BranchName}"></TextBlock>
+            <StackPanel.ToolTip>
+                <TextBlock Text="{Binding Stash.BranchName}"></TextBlock>
+            </StackPanel.ToolTip>
+        </StackPanel>
+    </StackPanel>
 </UserControl>

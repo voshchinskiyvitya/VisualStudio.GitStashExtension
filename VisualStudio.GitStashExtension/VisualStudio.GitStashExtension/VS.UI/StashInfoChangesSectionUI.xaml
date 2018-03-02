@@ -24,7 +24,7 @@
                 <HierarchicalDataTemplate DataType="{x:Type models:TreeViewItemWithIcon}" ItemsSource="{Binding Items}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding Source}" Width="16" Height="16"></Image>
-                        <TextBlock FontSize="14" Text="{Binding Text}" Margin="5 0 0 0">
+                        <TextBlock Text="{Binding Text}" Margin="5 0 0 0">
                             <TextBlock.ContextMenu>
                                 <ContextMenu Style="{DynamicResource ChangedFileContextMenuStyle}">
                                     <MenuItem Header="Compare with previous" Click="CompareFileMenuItem_Click" Tag="{Binding}"></MenuItem>
