@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Runtime.CompilerServices;
 using VisualStudio.GitStashExtension.Annotations;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.TeamFoundation.Git.Extensibility;
+using VisualStudio.GitStashExtension.Extensions;
 
 namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
 {
@@ -14,6 +16,7 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
     {
         private readonly ITeamExplorer _teamExplorer;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IGitExt _gitService;
 
         [ImportingConstructor]
         public StashListTeamExplorerNavigationItem([Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider)
@@ -21,6 +24,10 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
             _serviceProvider = serviceProvider;
             _teamExplorer = _serviceProvider.GetService(typeof(ITeamExplorer)) as ITeamExplorer;
             _image = Resources.TeamExplorerIcon;
+            _gitService = (IGitExt)_serviceProvider.GetService(typeof(IGitExt));
+
+            IsVisible = _gitService.AnyActiveRepository();
+            _gitService.PropertyChanged += GitServicePropertyChanged;
         }
 
         public void Dispose()
@@ -41,7 +48,8 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
         private Image _image;
         public Image Image => _image;
 
-        public bool IsVisible => true;
+        public bool IsVisible { get; set; }
+
         public bool IsEnabled => true;
         public int ArgbColor => BitConverter.ToInt32(
             new[] {
@@ -58,6 +66,15 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void GitServicePropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            IsVisible = propertyChangedEventArgs.PropertyName == nameof(_gitService.ActiveRepositories) &&
+                        _gitService.AnyActiveRepository();
+
+            if(IsVisible)
+                _teamExplorer.CurrentPage.Refresh();
         }
     }
 }
