@@ -27,6 +27,12 @@ namespace VisualStudio.GitStashExtension
 
         public static Color NavigationItemColorArgb = Color.FromArgb(0, 213, 66);  // green
 
+        public static Color BlueThemeColor = Color.FromArgb(255, 236, 181);
+
+        public static Color LightThemeColor = Color.FromArgb(238, 238, 242);  
+
+        public static Color DarkThemeColor = Color.FromArgb(45, 45, 48);  
+
         public const string UnknownRepositoryErrorMessage = "Select repository to find stashes.";
 
         public const string UnexpectedErrorMessage = "Unexpected error.";

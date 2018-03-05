@@ -6,10 +6,13 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using VisualStudio.GitStashExtension.Annotations;
 using VisualStudio.GitStashExtension.Extensions;
 using VisualStudio.GitStashExtension.GitHelpers;
 using VisualStudio.GitStashExtension.Models;
+using VisualStudio.GitStashExtension.VSHelpers;
 
 namespace VisualStudio.GitStashExtension.VS.UI
 {
@@ -27,6 +30,21 @@ namespace VisualStudio.GitStashExtension.VS.UI
             {
                 _stashList = value;
                 OnPropertyChanged();
+            }
+        }
+
+        public ImageSource SearchIconSource
+        {
+            get
+            {
+                var theme = VisualStudioThemeHelper.GetCurrentTheme();
+
+                var path = theme == VsColorTheme.Dark ?
+                        @"pack://application:,,,/VisualStudio.GitStashExtension;component/Resources/SearchIcon_white.png" :
+                        @"pack://application:,,,/VisualStudio.GitStashExtension;component/Resources/SearchIcon.png";
+
+                var uriSource = new Uri(path, UriKind.Absolute);
+                return new BitmapImage(uriSource);
             }
         }
 

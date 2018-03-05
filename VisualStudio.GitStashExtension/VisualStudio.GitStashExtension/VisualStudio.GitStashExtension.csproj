@@ -58,6 +58,7 @@
     <Compile Include="Models\GitCommandResult.cs" />
     <Compile Include="Models\Stash.cs" />
     <Compile Include="Models\TreeViewItemWithIcon.cs" />
+    <Compile Include="Models\VsColorTheme.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources.Designer.cs">
@@ -88,6 +89,7 @@
       <DependentUpon>StashListTeamExplorerSectionUI.xaml</DependentUpon>
     </Compile>
     <Compile Include="VSHelpers\VisualStudioPathHelper.cs" />
+    <Compile Include="VSHelpers\VisualStudioThemeHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
@@ -228,6 +230,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\SearchIcon_white.png" />
     <Content Include="Resources\TeamExplorerIcon.png" />
   </ItemGroup>
   <ItemGroup>
