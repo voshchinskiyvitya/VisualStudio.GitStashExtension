@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using Microsoft.TeamFoundation.Controls;
 using System.Drawing;
 using System.Runtime.CompilerServices;
+using System.Windows.Threading;
 using VisualStudio.GitStashExtension.Annotations;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TeamFoundation.Git.Extensibility;
@@ -73,8 +74,14 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
             IsVisible = propertyChangedEventArgs.PropertyName == nameof(_gitService.ActiveRepositories) &&
                         _gitService.AnyActiveRepository();
 
-            if(IsVisible)
-                _teamExplorer.CurrentPage.Refresh();
+            if (IsVisible)
+            {
+                Dispatcher.CurrentDispatcher.Invoke(() =>
+                {
+                    if (_teamExplorer.CurrentPage.GetId() == new Guid(Constants.HomePageId))
+                        _teamExplorer.CurrentPage.Refresh();
+                });
+            }
         }
     }
 }

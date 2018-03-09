@@ -13,6 +13,8 @@ namespace VisualStudio.GitStashExtension
 
         public const string StashInfoPageId = "ABBF38A6-1272-4C92-AC7A-79FBCFC796A9";
 
+        public const string HomePageId = "312e8a59-2712-48a1-863e-0ef4e67961fc";
+
         public const string StashListSectionId = "A94AE67A-AF52-42F2-B6E4-C433732AAEB3";
 
         public const string StashInfoChangesSectionId = "43CB2B08-DBEE-4096-B091-EBAE5E2E07D2";
