@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using VisualStudio.GitStashExtension.Models;
@@ -200,6 +201,14 @@ namespace VisualStudio.GitStashExtension.GitHelpers
                         ErrorMessage = errorMessage.Result
                     };
                 }
+            }
+            catch (Win32Exception e)
+            {
+                Log.LogException(e);
+                if (e.TargetSite.Name != "StartWithCreateProcess")
+                    throw;
+
+                return new GitCommandResult { ErrorMessage = Constants.UnableFindGitMessage };
             }
             catch (Exception e)
             {

@@ -39,6 +39,8 @@ namespace VisualStudio.GitStashExtension
 
         public const string UnexpectedErrorMessage = "Unexpected error.";
 
+        public const string UnableFindGitMessage = "git.exe wasn't found. Please, verify that git was installed on your computer.";
+
         public const string DiffToolErrorMessage = "Can't run vsDiffMerge.exe to compare files. \n" +
                                                    "Please check tool install path: \n" +
                                                    "%visual_studio_install-dir%Common7\\IDE\\CommonExtensions\\Microsoft\\TeamFoundation\\Team Explorer\\vsDiffMerge.exe";
