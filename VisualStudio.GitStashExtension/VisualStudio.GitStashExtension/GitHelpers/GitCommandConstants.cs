@@ -11,7 +11,11 @@
 
         public const string Stash = "stash";
 
+        public const string StashIncludeUntracked = "stash --include-untracked";
+
         public const string StashSaveFormatted = "stash save {0}";
+
+        public const string StashSaveFormattedIncludeUntracked = "stash save --include-untracked {0}";
 
         public const string StashDeleteFormatted = "stash drop stash@{{{0}}}";
 

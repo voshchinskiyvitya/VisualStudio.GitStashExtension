@@ -64,13 +64,25 @@ namespace VisualStudio.GitStashExtension.GitHelpers
         /// Creates stash on current branch.
         /// </summary>
         /// <param name="message">Save message for stash.</param>
+        /// <param name="includeUntrackedFiles">Flag indicates that we should include untracked files in stash.</param>
         /// <param name="errorMessage">Error message.</param>
         /// <returns>Bool value that indicates whether command execution was succeeded.</returns>
-        public bool TryCreateStash(string message, out string errorMessage)
+        public bool TryCreateStash(string message, bool includeUntrackedFiles, out string errorMessage)
         {
-            var createCommand = string.IsNullOrEmpty(message) ? 
-                GitCommandConstants.Stash : 
-                string.Format(GitCommandConstants.StashSaveFormatted, message);
+            string createCommand;
+
+            if (string.IsNullOrEmpty(message))
+            {
+                createCommand = includeUntrackedFiles
+                    ? GitCommandConstants.StashIncludeUntracked
+                    : GitCommandConstants.Stash;
+            }
+            else
+            {
+                createCommand = includeUntrackedFiles
+                    ? string.Format(GitCommandConstants.StashSaveFormattedIncludeUntracked, message)
+                    : string.Format(GitCommandConstants.StashSaveFormatted, message);
+            }
 
             var commandResult = Execute(createCommand);
 
