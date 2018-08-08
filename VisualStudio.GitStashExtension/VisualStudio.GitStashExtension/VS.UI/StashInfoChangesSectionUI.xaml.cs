@@ -67,8 +67,9 @@ namespace VisualStudio.GitStashExtension.VS.UI
             var treeItem = menuItem?.Tag as TreeViewItemWithIcon;
             var filePath = treeItem?.FullPath;
             var fileName = treeItem?.Text;
+            var isNew = treeItem?.IsNew ?? false;
 
-            _viewModel.RunDiff(filePath, fileName);
+            _viewModel.RunDiff(filePath, fileName, isNew);
         }
     }
 }

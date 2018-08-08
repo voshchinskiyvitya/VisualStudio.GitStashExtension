@@ -128,6 +128,67 @@ namespace VisualStudio.GitStashExtension.GitHelpers
 
             errorMessage = string.Empty;
             stash = GitResultParser.ParseStashInfoResult(commandResult.OutputMessage);
+
+            if (AreUntrackedFilesExist(id))
+            {
+                if (!TryGetStashUntrackedContent(id, out var untrackedInfo, out errorMessage))
+                {
+                    return false;
+                }
+
+                foreach (var file in untrackedInfo.ChangedFiles)
+                {
+                    stash.ChangedFiles.Add(file);
+                }
+
+                return true;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Checks that stash contains untracked files (new files, created before the stash).
+        /// </summary>
+        /// <param name="id">Stash id.</param>
+        /// <returns>Bool value that indicates whether command execution was succeeded.</returns>
+        public bool AreUntrackedFilesExist(int id)
+        {
+            var checkCommand = string.Format(GitCommandConstants.CatFileStashCheckUntrackedFilesExist, id);
+
+            var commandResult = ExecuteWithCmd(checkCommand);
+
+            if (commandResult.IsError)
+            {
+                return false;
+            }
+
+            return !string.IsNullOrEmpty(commandResult.OutputMessage) && commandResult.OutputMessage.Contains("commit");
+        }
+
+        /// <summary>
+        /// Gets stash info by id.
+        /// </summary>
+        /// <param name="id">Stash id.</param>
+        /// <param name="stash">Stash model.</param>
+        /// <param name="errorMessage">Error message.</param>
+        /// <returns>Bool value that indicates whether command execution was succeeded.</returns>
+        public bool TryGetStashUntrackedContent(int id, out Stash stash, out string errorMessage)
+        {
+            var infoCommand = string.Format(GitCommandConstants.StashUntrackedInfoFormatted, id);
+
+            var commandResult = ExecuteWithCmd(infoCommand);
+
+            if (commandResult.IsError)
+            {
+                errorMessage = commandResult.ErrorMessage;
+                stash = null;
+                return false;
+            }
+
+            errorMessage = string.Empty;
+            stash = GitResultParser.ParseStashUntrackedInfoResult(commandResult.OutputMessage);
+
             return true;
         }
 

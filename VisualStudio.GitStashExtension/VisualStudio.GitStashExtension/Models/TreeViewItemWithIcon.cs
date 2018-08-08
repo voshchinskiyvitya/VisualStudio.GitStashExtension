@@ -51,6 +51,11 @@ namespace VisualStudio.GitStashExtension.Models
         /// </summary>
         public IList<TreeViewItemWithIcon> Items { get; set; }
 
+        /// <summary>
+        /// Flag indicates whether this file is new (untracked) or not.
+        /// </summary>
+        public bool? IsNew { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]

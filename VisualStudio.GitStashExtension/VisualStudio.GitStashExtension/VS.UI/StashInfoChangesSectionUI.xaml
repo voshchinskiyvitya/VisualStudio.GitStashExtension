@@ -31,6 +31,23 @@
                                 </ContextMenu>
                             </TextBlock.ContextMenu>
                         </TextBlock>
+                        <TextBlock Text="[new]" Margin="5 0 0 0">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=IsNew}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Path=IsNew}" Value="False">
+                                            <Setter Property="Visibility" Value="Hidden"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Path=IsNew}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Hidden"></Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                     </StackPanel>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
