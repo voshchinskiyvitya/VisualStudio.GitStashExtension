@@ -30,5 +30,7 @@
         public const string AfterStashFileVersionSaveTempFormatted = "show stash@{{{0}}}:\"{1}\" > {2}";
 
         public const string BeforeStashFileVersionSaveTempFormatted = "show stash@{{{0}}}^^:\"{1}\" > {2}";
+
+        public const string UntrackedStashFileVersionSaveTempFormatted = "show stash@{{{0}}}^^3:\"{1}\" > {2}";
     }
 }

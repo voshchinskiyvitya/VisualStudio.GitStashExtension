@@ -56,6 +56,11 @@ namespace VisualStudio.GitStashExtension.Models
         /// </summary>
         public bool? IsNew { get; set; }
 
+        /// <summary>
+        /// Context menu header text for file comparing/opening.
+        /// </summary>
+        public string ContextMenuText => IsNew ?? false ? "Open" : "Compare with previous";
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]

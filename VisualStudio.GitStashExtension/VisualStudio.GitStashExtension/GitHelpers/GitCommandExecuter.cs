@@ -240,6 +240,30 @@ namespace VisualStudio.GitStashExtension.GitHelpers
             return true;
         }
 
+        /// <summary>
+        /// Saves temp file untracked stash version of specific file.
+        /// </summary>
+        /// <param name="id">Stash id.</param>
+        /// <param name="filePath">Path to the specific file.</param>
+        /// <param name="pathToSave">Path for saving temp file.</param>
+        /// <param name="errorMessage">Error message.</param>
+        /// <returns>Bool value that indicates whether command execution was succeeded.</returns>
+        public bool TrySaveFileUntrackedStashVersion(int id, string filePath, string pathToSave, out string errorMessage)
+        {
+            var beforeFileCreateCommand = string.Format(GitCommandConstants.UntrackedStashFileVersionSaveTempFormatted, id, filePath, pathToSave);
+
+            var commandResult = ExecuteWithCmd(beforeFileCreateCommand);
+
+            if (commandResult.IsError)
+            {
+                errorMessage = commandResult.ErrorMessage;
+                return false;
+            }
+
+            errorMessage = string.Empty;
+            return true;
+        }
+
         private GitCommandResult Execute(string gitCommand)
         {
             try

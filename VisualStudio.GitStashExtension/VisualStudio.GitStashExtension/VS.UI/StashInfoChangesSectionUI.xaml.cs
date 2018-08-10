@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using EnvDTE;
 using Microsoft.TeamFoundation.Controls;
 using Microsoft.VisualStudio.Shell.Interop;
 using VisualStudio.GitStashExtension.GitHelpers;
@@ -21,6 +22,7 @@ namespace VisualStudio.GitStashExtension.VS.UI
         private readonly GitCommandExecuter _gitCommandExecuter;
         private readonly ITeamExplorer _teamExplorer;
         private readonly IVsDifferenceService _vsDiffService;
+        private readonly DTE _dte;
         private readonly StashInfoChangesSectionViewModel _viewModel;
 
         public StashInfoChangesSectionUI(Stash stash, IServiceProvider serviceProvider)
@@ -31,9 +33,10 @@ namespace VisualStudio.GitStashExtension.VS.UI
             _gitCommandExecuter = new GitCommandExecuter(_serviceProvider);
             _teamExplorer = _serviceProvider.GetService(typeof(ITeamExplorer)) as ITeamExplorer;
             _vsDiffService = _serviceProvider.GetService(typeof(SVsDifferenceService)) as IVsDifferenceService;
+            _dte = _serviceProvider.GetService(typeof(DTE)) as DTE;
             InitializeComponent();
 
-            DataContext = _viewModel = new StashInfoChangesSectionViewModel(stash, _fileIconsService, _gitCommandExecuter, _teamExplorer, _vsDiffService);
+            DataContext = _viewModel = new StashInfoChangesSectionViewModel(stash, _fileIconsService, _gitCommandExecuter, _teamExplorer, _vsDiffService, _dte);
         }
 
         private void PreviewMouseWheelForTreeView(object sender, MouseWheelEventArgs e)

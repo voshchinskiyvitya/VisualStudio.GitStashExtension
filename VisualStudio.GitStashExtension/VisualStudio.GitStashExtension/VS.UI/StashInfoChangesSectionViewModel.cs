@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
+using EnvDTE;
 using Microsoft.TeamFoundation.Controls;
 using Microsoft.VisualStudio.Shell.Interop;
 using VisualStudio.GitStashExtension.Annotations;
@@ -23,17 +24,24 @@ namespace VisualStudio.GitStashExtension.VS.UI
         private readonly GitCommandExecuter _gitCommandExecuter;
         private readonly ITeamExplorer _teamExplorer;
         private readonly IVsDifferenceService _vsDiffService;
+        private readonly DTE _dte;
         private ObservableCollection<TreeViewItemWithIcon> _changeItems;
 
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public StashInfoChangesSectionViewModel(Stash stash, FileIconsService fileIconsService, GitCommandExecuter gitCommandExecuter, ITeamExplorer teamExplorer, IVsDifferenceService vsDiffService)
+        public StashInfoChangesSectionViewModel(Stash stash, 
+            FileIconsService fileIconsService, 
+            GitCommandExecuter gitCommandExecuter, 
+            ITeamExplorer teamExplorer, 
+            IVsDifferenceService vsDiffService, 
+            DTE dte)
         {
             _fileIconsService = fileIconsService;
             _gitCommandExecuter = gitCommandExecuter;
             _teamExplorer = teamExplorer;
             _vsDiffService = vsDiffService;
+            _dte = dte;
             _stash = stash;
 
             if (stash == null)
@@ -95,19 +103,20 @@ namespace VisualStudio.GitStashExtension.VS.UI
         {
             var beforeTempPath = Path.GetTempFileName();
             var afterTempPath = Path.GetTempFileName();
+            var untrackedTempPath = Path.GetTempFileName();
 
             try
             {
                 if (isNew)
                 {
-                    if (!_gitCommandExecuter.TrySaveFileBeforeStashVersion(_stash.Id, filePath, beforeTempPath, out var error))
+                    if (!_gitCommandExecuter.TrySaveFileUntrackedStashVersion(_stash.Id, filePath, untrackedTempPath, out var error))
                     {
                         _teamExplorer?.ShowNotification(error, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
                         return;
                     }
                     else
                     {
-                        // TODO: open file.
+                        _dte.ItemOperations.OpenFile(untrackedTempPath);
                         return;
                     }
                 }

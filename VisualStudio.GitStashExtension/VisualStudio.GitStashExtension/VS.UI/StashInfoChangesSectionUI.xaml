@@ -27,7 +27,7 @@
                         <TextBlock Text="{Binding Text}" Margin="5 0 0 0">
                             <TextBlock.ContextMenu>
                                 <ContextMenu Style="{DynamicResource ChangedFileContextMenuStyle}">
-                                    <MenuItem Header="Compare with previous" Click="CompareFileMenuItem_Click" Tag="{Binding}"></MenuItem>
+                                    <MenuItem Header="{Binding ContextMenuText}" Click="CompareFileMenuItem_Click" Tag="{Binding}"></MenuItem>
                                 </ContextMenu>
                             </TextBlock.ContextMenu>
                         </TextBlock>
