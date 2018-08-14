@@ -19,7 +19,10 @@
 		<Border BorderThickness="1" BorderBrush="{StaticResource TextBoxBorderColor}" VerticalAlignment="Top" Margin="15 10 10 10">
             <TextBox x:Name="MessageTextBox" Text="{Binding Message}" BorderThickness="0" Margin="0 3 0 3" Style="{DynamicResource TextBoxStyle}"></TextBox>
 		</Border>
-        <CheckBox x:Name="IncludeUntrackedFilesCheckbox" Content="Include untracked files" IsChecked="{Binding IncludeUntrackedFiles}" Width="auto" Height="Auto" Margin="15 5 5 5" HorizontalAlignment="Left" VerticalAlignment="Center"></CheckBox>
+        <StackPanel Orientation="Horizontal">
+	        <CheckBox x:Name="IncludeUntrackedFilesCheckbox" IsChecked="{Binding IncludeUntrackedFiles}" Width="auto" Height="Auto" Margin="15 5 5 5" HorizontalAlignment="Left" VerticalAlignment="Center"></CheckBox>
+			<Label Style="{DynamicResource LabelStyle}">Include untracked files</Label>
+        </StackPanel>
 		<Button x:Name="CreateStashButton" Click="CreateStashButton_Click" Content="Create stash" Width="auto" Height="Auto" Padding="5" Margin="15 5 5 5" HorizontalAlignment="Left"></Button>
 	</StackPanel>
 </UserControl>
