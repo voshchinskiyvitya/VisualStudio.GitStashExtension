@@ -73,5 +73,21 @@ namespace VisualStudio.GitStashExtension.GitHelpers
                 ChangedFiles = filePaths.Select(p => new ChangedFile { Path = p }).ToList()
             };
         }
+
+        /// <summary>
+        /// Converst git stash untrackedinfo command string result to Stash model.
+        /// </summary>
+        /// <param name="data">String data.</param>
+        /// <returns>Stash model.</returns>
+        public static Stash ParseStashUntrackedInfoResult(string data)
+        {
+            var stash = ParseStashInfoResult(data);
+            foreach (var file in stash.ChangedFiles)
+            {
+                file.IsNew = true;
+            }
+
+            return stash;
+        }
     }
 }

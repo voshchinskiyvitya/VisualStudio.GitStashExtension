@@ -20,7 +20,11 @@
         <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}"></Setter>
     </Style>
 
-    <Style x:Key="StashListItemStyle" TargetType="{x:Type ListBoxItem}">
+	<Style x:Key="LabelStyle" TargetType="{x:Type Label}">
+		<Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}"></Setter>
+	</Style>
+
+	<Style x:Key="StashListItemStyle" TargetType="{x:Type ListBoxItem}">
         <Style.Triggers>
             <Trigger Property="IsSelected" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource ListViewItemSelectedForegroundColor}"></Setter>

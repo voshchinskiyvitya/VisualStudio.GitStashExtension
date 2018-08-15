@@ -64,13 +64,25 @@ namespace VisualStudio.GitStashExtension.GitHelpers
         /// Creates stash on current branch.
         /// </summary>
         /// <param name="message">Save message for stash.</param>
+        /// <param name="includeUntrackedFiles">Flag indicates that we should include untracked files in stash.</param>
         /// <param name="errorMessage">Error message.</param>
         /// <returns>Bool value that indicates whether command execution was succeeded.</returns>
-        public bool TryCreateStash(string message, out string errorMessage)
+        public bool TryCreateStash(string message, bool includeUntrackedFiles, out string errorMessage)
         {
-            var createCommand = string.IsNullOrEmpty(message) ? 
-                GitCommandConstants.Stash : 
-                string.Format(GitCommandConstants.StashSaveFormatted, message);
+            string createCommand;
+
+            if (string.IsNullOrEmpty(message))
+            {
+                createCommand = includeUntrackedFiles
+                    ? GitCommandConstants.StashIncludeUntracked
+                    : GitCommandConstants.Stash;
+            }
+            else
+            {
+                createCommand = includeUntrackedFiles
+                    ? string.Format(GitCommandConstants.StashSaveFormattedIncludeUntracked, message)
+                    : string.Format(GitCommandConstants.StashSaveFormatted, message);
+            }
 
             var commandResult = Execute(createCommand);
 
@@ -116,6 +128,67 @@ namespace VisualStudio.GitStashExtension.GitHelpers
 
             errorMessage = string.Empty;
             stash = GitResultParser.ParseStashInfoResult(commandResult.OutputMessage);
+
+            if (AreUntrackedFilesExist(id))
+            {
+                if (!TryGetStashUntrackedContent(id, out var untrackedInfo, out errorMessage))
+                {
+                    return false;
+                }
+
+                foreach (var file in untrackedInfo.ChangedFiles)
+                {
+                    stash.ChangedFiles.Add(file);
+                }
+
+                return true;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Checks that stash contains untracked files (new files, created before the stash).
+        /// </summary>
+        /// <param name="id">Stash id.</param>
+        /// <returns>Bool value that indicates whether command execution was succeeded.</returns>
+        public bool AreUntrackedFilesExist(int id)
+        {
+            var checkCommand = string.Format(GitCommandConstants.CatFileStashCheckUntrackedFilesExist, id);
+
+            var commandResult = ExecuteWithCmd(checkCommand);
+
+            if (commandResult.IsError)
+            {
+                return false;
+            }
+
+            return !string.IsNullOrEmpty(commandResult.OutputMessage) && commandResult.OutputMessage.Contains("commit");
+        }
+
+        /// <summary>
+        /// Gets stash info by id.
+        /// </summary>
+        /// <param name="id">Stash id.</param>
+        /// <param name="stash">Stash model.</param>
+        /// <param name="errorMessage">Error message.</param>
+        /// <returns>Bool value that indicates whether command execution was succeeded.</returns>
+        public bool TryGetStashUntrackedContent(int id, out Stash stash, out string errorMessage)
+        {
+            var infoCommand = string.Format(GitCommandConstants.StashUntrackedInfoFormatted, id);
+
+            var commandResult = ExecuteWithCmd(infoCommand);
+
+            if (commandResult.IsError)
+            {
+                errorMessage = commandResult.ErrorMessage;
+                stash = null;
+                return false;
+            }
+
+            errorMessage = string.Empty;
+            stash = GitResultParser.ParseStashUntrackedInfoResult(commandResult.OutputMessage);
+
             return true;
         }
 
@@ -154,6 +227,30 @@ namespace VisualStudio.GitStashExtension.GitHelpers
         public bool TrySaveFileBeforeStashVersion(int id, string filePath, string pathToSave, out string errorMessage)
         {
             var beforeFileCreateCommand = string.Format(GitCommandConstants.BeforeStashFileVersionSaveTempFormatted, id, filePath, pathToSave);
+
+            var commandResult = ExecuteWithCmd(beforeFileCreateCommand);
+
+            if (commandResult.IsError)
+            {
+                errorMessage = commandResult.ErrorMessage;
+                return false;
+            }
+
+            errorMessage = string.Empty;
+            return true;
+        }
+
+        /// <summary>
+        /// Saves temp file untracked stash version of specific file.
+        /// </summary>
+        /// <param name="id">Stash id.</param>
+        /// <param name="filePath">Path to the specific file.</param>
+        /// <param name="pathToSave">Path for saving temp file.</param>
+        /// <param name="errorMessage">Error message.</param>
+        /// <returns>Bool value that indicates whether command execution was succeeded.</returns>
+        public bool TrySaveFileUntrackedStashVersion(int id, string filePath, string pathToSave, out string errorMessage)
+        {
+            var beforeFileCreateCommand = string.Format(GitCommandConstants.UntrackedStashFileVersionSaveTempFormatted, id, filePath, pathToSave);
 
             var commandResult = ExecuteWithCmd(beforeFileCreateCommand);
 

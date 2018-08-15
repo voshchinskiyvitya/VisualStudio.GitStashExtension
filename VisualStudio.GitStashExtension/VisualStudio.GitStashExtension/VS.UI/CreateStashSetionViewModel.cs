@@ -33,6 +33,20 @@ namespace VisualStudio.GitStashExtension.VS.UI
             }
         }
 
+        private bool _includeUntrackedFiles;
+        public bool IncludeUntrackedFiles
+        {
+            get
+            {
+                return _includeUntrackedFiles;
+            }
+            set
+            {
+                _includeUntrackedFiles = value;
+                OnPropertyChanged();
+            }
+        }
+
         public CreateStashSetionViewModel(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
@@ -42,7 +56,7 @@ namespace VisualStudio.GitStashExtension.VS.UI
 
         public void CreateStash()
         {
-            if (_gitCommandExecuter.TryCreateStash(_message, out var errorMessage))
+            if (_gitCommandExecuter.TryCreateStash(_message, _includeUntrackedFiles, out var errorMessage))
             {
                 _teamExplorer.CurrentPage.RefreshPageAndSections();
             }

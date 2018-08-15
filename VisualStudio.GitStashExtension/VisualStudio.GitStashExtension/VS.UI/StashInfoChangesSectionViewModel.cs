@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
+using EnvDTE;
 using Microsoft.TeamFoundation.Controls;
 using Microsoft.VisualStudio.Shell.Interop;
 using VisualStudio.GitStashExtension.Annotations;
@@ -23,17 +24,24 @@ namespace VisualStudio.GitStashExtension.VS.UI
         private readonly GitCommandExecuter _gitCommandExecuter;
         private readonly ITeamExplorer _teamExplorer;
         private readonly IVsDifferenceService _vsDiffService;
+        private readonly DTE _dte;
         private ObservableCollection<TreeViewItemWithIcon> _changeItems;
 
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public StashInfoChangesSectionViewModel(Stash stash, FileIconsService fileIconsService, GitCommandExecuter gitCommandExecuter, ITeamExplorer teamExplorer, IVsDifferenceService vsDiffService)
+        public StashInfoChangesSectionViewModel(Stash stash, 
+            FileIconsService fileIconsService, 
+            GitCommandExecuter gitCommandExecuter, 
+            ITeamExplorer teamExplorer, 
+            IVsDifferenceService vsDiffService, 
+            DTE dte)
         {
             _fileIconsService = fileIconsService;
             _gitCommandExecuter = gitCommandExecuter;
             _teamExplorer = teamExplorer;
             _vsDiffService = vsDiffService;
+            _dte = dte;
             _stash = stash;
 
             if (stash == null)
@@ -41,24 +49,38 @@ namespace VisualStudio.GitStashExtension.VS.UI
 
             var separator = '/';
             var rootNode = new TreeNode();
-            var paths = stash.ChangedFiles
-                .Select(f => f.Path)
-                .Where(x => !string.IsNullOrEmpty(x.Trim()))
-                .ToList();
 
-            foreach (var path in paths)
+            foreach (var file in stash.ChangedFiles)
             {
+                if (string.IsNullOrEmpty(file.Path.Trim()))
+                {
+                    continue;
+                }
+
                 var currentNode = rootNode;
-                var pathNodes = path.Split(separator);
+                var pathNodes = file.Path.Split(separator);
                 foreach (var item in pathNodes)
                 {
                     var foundedNode = currentNode.Nodes.Cast<TreeNode>().FirstOrDefault(x => x.Text == item);
-                    currentNode = foundedNode ?? currentNode.Nodes.Add(item);
+                    if (foundedNode != null)
+                    {
+                        currentNode = foundedNode;
+                    }
+                    else
+                    {
+                        currentNode = currentNode.Nodes.Add(item);
+                        // Last node in the path -> file.
+                        if (item == pathNodes.LastOrDefault())
+                        {
+                            // Additional file info
+                            currentNode.Tag = file.IsNew;
+                        }
+                    }
                 }
             }
 
             var rootTreeViewItem = ToTreeViewItem(rootNode, false);
-            ChangeItems = new ObservableCollection<TreeViewItemWithIcon>(rootTreeViewItem.Items.ToList());
+            ChangeItems = new ObservableCollection<TreeViewItemWithIcon>(rootTreeViewItem.Items?.ToList() ?? Enumerable.Empty<TreeViewItemWithIcon>());
         }
 
         public ObservableCollection<TreeViewItemWithIcon> ChangeItems
@@ -76,13 +98,28 @@ namespace VisualStudio.GitStashExtension.VS.UI
         /// </summary>
         /// <param name="filePath">File path.</param>
         /// <param name="fileName">File name.</param>
-        public void RunDiff(string filePath, string fileName)
+        /// <param name="isNew">Indicates that file is new and doesn't have previous version.</param>
+        public void RunDiff(string filePath, string fileName, bool isNew)
         {
             var beforeTempPath = Path.GetTempFileName();
             var afterTempPath = Path.GetTempFileName();
+            var untrackedTempPath = Path.GetTempFileName();
 
             try
             {
+                if (isNew)
+                {
+                    if (!_gitCommandExecuter.TrySaveFileUntrackedStashVersion(_stash.Id, filePath, untrackedTempPath, out var error))
+                    {
+                        _teamExplorer?.ShowNotification(error, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
+                        return;
+                    }
+                    else
+                    {
+                        _dte.ItemOperations.OpenFile(untrackedTempPath);
+                        return;
+                    }
+                }
 
                 if (!_gitCommandExecuter.TrySaveFileBeforeStashVersion(_stash.Id, filePath, beforeTempPath, out var errorMessage))
                 {
@@ -131,7 +168,8 @@ namespace VisualStudio.GitStashExtension.VS.UI
                 FullPath = GetTreeViewNodeFullPath(node),
                 Source = icon,
                 IsExpanded = !isFile,
-                IsFile = isFile
+                IsFile = isFile,
+                IsNew = node.Tag as bool?
             };
 
             foreach (var child in node.Nodes.Cast<TreeNode>().ToList())

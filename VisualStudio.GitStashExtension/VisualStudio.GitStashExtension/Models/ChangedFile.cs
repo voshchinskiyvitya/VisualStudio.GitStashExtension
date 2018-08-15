@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VisualStudio.GitStashExtension.Models
+﻿namespace VisualStudio.GitStashExtension.Models
 {
     public class ChangedFile
     {
+        /// <summary>
+        /// File path.
+        /// </summary>
         public string Path { get; set; }
+
+        /// <summary>
+        /// Flag indicates whether this file is new (untracked) or not.
+        /// </summary>
+        public bool IsNew { get; set; }
     }
 }

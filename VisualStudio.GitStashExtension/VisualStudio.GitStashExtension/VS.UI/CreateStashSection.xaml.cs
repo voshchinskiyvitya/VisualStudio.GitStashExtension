@@ -32,6 +32,7 @@ namespace VisualStudio.GitStashExtension.VS.UI
         public void Refresh()
         {
             _viewModel.Message = string.Empty;
+            _viewModel.IncludeUntrackedFiles = false;
         }
 
         private void CreateStashButton_Click(object sender, RoutedEventArgs e)
