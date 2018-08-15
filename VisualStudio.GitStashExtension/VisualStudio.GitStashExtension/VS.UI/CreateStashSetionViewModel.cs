@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using EnvDTE;
 using VisualStudio.GitStashExtension.Annotations;
 using VisualStudio.GitStashExtension.GitHelpers;
 
@@ -16,6 +17,7 @@ namespace VisualStudio.GitStashExtension.VS.UI
         private readonly ITeamExplorer _teamExplorer;
         private readonly IServiceProvider _serviceProvider;
         private readonly GitCommandExecuter _gitCommandExecuter;
+        private readonly DTE _dte;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -52,10 +54,12 @@ namespace VisualStudio.GitStashExtension.VS.UI
             _serviceProvider = serviceProvider;
             _teamExplorer = _serviceProvider.GetService(typeof(ITeamExplorer)) as ITeamExplorer;
             _gitCommandExecuter = new GitCommandExecuter(serviceProvider);
+            _dte = _serviceProvider.GetService(typeof(DTE)) as DTE;
         }
 
         public void CreateStash()
         {
+            var result =_dte.ItemOperations.PromptToSave;
             if (_gitCommandExecuter.TryCreateStash(_message, _includeUntrackedFiles, out var errorMessage))
             {
                 _teamExplorer.CurrentPage.RefreshPageAndSections();
