@@ -10,6 +10,8 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
     public class StashInfoTeamExplorerPage: ITeamExplorerPage
     {
         private object _pageContent;
+        private Stash _stashInfo;
+
 
         public StashInfoTeamExplorerPage()
         {
@@ -24,7 +26,11 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
         {
             _pageContent = new StashInfoPage(e.Context as Stash);
             var changesSection = this.GetSection(new Guid(Constants.StashInfoChangesSectionId));
-            changesSection.SaveContext(this, new SectionSaveContextEventArgs {Context = e.Context});
+            _stashInfo = e.Context as Stash;
+            changesSection.SaveContext(this, new SectionSaveContextEventArgs
+            {
+                Context = _stashInfo
+            });
         }
 
         public void Loaded(object sender, PageLoadedEventArgs e)
@@ -33,6 +39,7 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
 
         public void SaveContext(object sender, PageSaveContextEventArgs e)
         {
+            e.Context = _stashInfo;
         }
 
         public void Refresh()
