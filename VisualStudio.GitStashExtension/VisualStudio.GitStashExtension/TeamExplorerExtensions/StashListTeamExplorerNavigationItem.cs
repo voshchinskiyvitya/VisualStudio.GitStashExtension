@@ -4,7 +4,6 @@ using System.ComponentModel.Composition;
 using Microsoft.TeamFoundation.Controls;
 using System.Drawing;
 using System.Runtime.CompilerServices;
-using System.Windows.Threading;
 using VisualStudio.GitStashExtension.Annotations;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TeamFoundation.Git.Extensibility;
@@ -47,9 +46,18 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
         public string Text => Constants.StashesLabel;
 
         private Image _image;
+        private bool _isVisible;
         public Image Image => _image;
 
-        public bool IsVisible { get; set; }
+        public bool IsVisible
+        {
+            get => _isVisible;
+            set
+            {
+                _isVisible = value;
+                OnPropertyChanged();
+            }
+        }
 
         public bool IsEnabled => true;
         public int ArgbColor => BitConverter.ToInt32(
@@ -73,15 +81,6 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
         {
             IsVisible = propertyChangedEventArgs.PropertyName == nameof(_gitService.ActiveRepositories) &&
                         _gitService.AnyActiveRepository();
-
-            if (IsVisible)
-            {
-                Dispatcher.CurrentDispatcher.Invoke(() =>
-                {
-                    if (_teamExplorer.CurrentPage.GetId() == new Guid(Constants.HomePageId))
-                        _teamExplorer.CurrentPage.Refresh();
-                });
-            }
         }
     }
 }
