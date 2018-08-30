@@ -39,7 +39,6 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
 
         public void Refresh()
         {
-            _pageContent.Refresh();
         }
 
         public void Cancel()
