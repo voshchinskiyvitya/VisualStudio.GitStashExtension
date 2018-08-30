@@ -29,12 +29,6 @@ namespace VisualStudio.GitStashExtension.VS.UI
             DataContext = _viewModel = new CreateStashSetionViewModel(serviceProvider);
         }
 
-        public void Refresh()
-        {
-            _viewModel.Message = string.Empty;
-            _viewModel.IncludeUntrackedFiles = false;
-        }
-
         private void CreateStashButton_Click(object sender, RoutedEventArgs e)
         {
             _viewModel.CreateStash();

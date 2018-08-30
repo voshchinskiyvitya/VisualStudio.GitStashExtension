@@ -1,11 +1,7 @@
 ﻿using Microsoft.TeamFoundation.Controls;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using EnvDTE;
 using VisualStudio.GitStashExtension.Annotations;
 using VisualStudio.GitStashExtension.GitHelpers;
@@ -63,6 +59,8 @@ namespace VisualStudio.GitStashExtension.VS.UI
             if (_gitCommandExecuter.TryCreateStash(_message, _includeUntrackedFiles, out var errorMessage))
             {
                 _teamExplorer.CurrentPage.RefreshPageAndSections();
+                Message = string.Empty;
+                IncludeUntrackedFiles = false;
             }
             else
             {
