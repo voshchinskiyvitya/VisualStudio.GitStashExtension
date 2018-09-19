@@ -73,7 +73,11 @@ namespace VisualStudio.GitStashExtension.VS.UI
                         if (item == pathNodes.LastOrDefault())
                         {
                             // Additional file info
-                            currentNode.Tag = file.IsNew;
+                            currentNode.Tag = new Models.FileAttributes
+                            {
+                                IsNew = file.IsNew,
+                                IsStaged = file.IsStaged
+                            };
                         }
                     }
                 }
@@ -99,7 +103,8 @@ namespace VisualStudio.GitStashExtension.VS.UI
         /// <param name="filePath">File path.</param>
         /// <param name="fileName">File name.</param>
         /// <param name="isNew">Indicates that file is new and doesn't have previous version.</param>
-        public void RunDiff(string filePath, string fileName, bool isNew)
+        /// <param name="isStaged">Indicates that file was staged before the stash.</param>
+        public void RunDiff(string filePath, string fileName, bool isNew, bool isStaged)
         {
             var beforeTempPath = Path.GetTempFileName();
             var afterTempPath = Path.GetTempFileName();
@@ -109,16 +114,32 @@ namespace VisualStudio.GitStashExtension.VS.UI
             {
                 if (isNew)
                 {
-                    if (!_gitCommandExecuter.TrySaveFileUntrackedStashVersion(_stash.Id, filePath, untrackedTempPath, out var error))
+                    if (isStaged)
                     {
-                        _teamExplorer?.ShowNotification(error, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
-                        return;
+                        if (!_gitCommandExecuter.TrySaveFileUntrackedStashVersion(_stash.Id, filePath, untrackedTempPath, true, out var error))
+                        {
+                            _teamExplorer?.ShowNotification(error, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
+                            return;
+                        }
+                        else
+                        {
+                            _dte.ItemOperations.OpenFile(untrackedTempPath);
+                            return;
+                        }
                     }
                     else
                     {
-                        _dte.ItemOperations.OpenFile(untrackedTempPath);
-                        return;
-                    }
+                        if (!_gitCommandExecuter.TrySaveFileUntrackedStashVersion(_stash.Id, filePath, untrackedTempPath, false, out var error))
+                        {
+                            _teamExplorer?.ShowNotification(error, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
+                            return;
+                        }
+                        else
+                        {
+                            _dte.ItemOperations.OpenFile(untrackedTempPath);
+                            return;
+                        }
+                    }                    
                 }
 
                 if (!_gitCommandExecuter.TrySaveFileBeforeStashVersion(_stash.Id, filePath, beforeTempPath, out var errorMessage))
@@ -162,6 +183,8 @@ namespace VisualStudio.GitStashExtension.VS.UI
                 ? _fileIconsService.GetFileIcon("." + fileExtension)
                 : _fileIconsService.GetFolderIcon(true);
 
+            var attributes = node.Tag as Models.FileAttributes;
+
             var treeViewItem = new TreeViewItemWithIcon
             {
                 Text = node.Text,
@@ -169,7 +192,8 @@ namespace VisualStudio.GitStashExtension.VS.UI
                 Source = icon,
                 IsExpanded = !isFile,
                 IsFile = isFile,
-                IsNew = node.Tag as bool?
+                IsNew = attributes?.IsNew,
+                IsStaged = attributes?.IsStaged
             };
 
             foreach (var child in node.Nodes.Cast<TreeNode>().ToList())

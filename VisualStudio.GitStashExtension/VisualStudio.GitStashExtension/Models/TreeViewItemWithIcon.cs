@@ -57,6 +57,11 @@ namespace VisualStudio.GitStashExtension.Models
         public bool? IsNew { get; set; }
 
         /// <summary>
+        /// Flag indicates whether this file is new (untracked) and staged or not.
+        /// </summary>
+        public bool? IsStaged { get; set; }
+
+        /// <summary>
         /// Context menu header text for file comparing/opening.
         /// </summary>
         public string ContextMenuText => IsNew ?? false ? "Open" : "Compare with previous";

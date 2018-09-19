@@ -55,6 +55,7 @@
     <Compile Include="GitHelpers\GitResultParser.cs" />
     <Compile Include="Logger\Logger.cs" />
     <Compile Include="Models\ChangedFile.cs" />
+    <Compile Include="Models\FileAttributes.cs" />
     <Compile Include="Models\GitCommandResult.cs" />
     <Compile Include="Models\Stash.cs" />
     <Compile Include="Models\TreeViewItemWithIcon.cs" />

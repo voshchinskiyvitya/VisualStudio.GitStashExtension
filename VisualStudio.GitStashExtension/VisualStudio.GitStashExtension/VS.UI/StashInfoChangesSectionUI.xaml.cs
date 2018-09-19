@@ -71,8 +71,9 @@ namespace VisualStudio.GitStashExtension.VS.UI
             var filePath = treeItem?.FullPath;
             var fileName = treeItem?.Text;
             var isNew = treeItem?.IsNew ?? false;
+            var isStaged = treeItem?.IsStaged ?? false;
 
-            _viewModel.RunDiff(filePath, fileName, isNew);
+            _viewModel.RunDiff(filePath, fileName, isNew, isStaged);
         }
     }
 }
