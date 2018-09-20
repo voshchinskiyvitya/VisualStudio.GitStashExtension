@@ -14,6 +14,24 @@
         <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}"></Setter>
     </Style>
 
+    <ContextMenu x:Key="ReadOnlyTextBoxContextMenu" Background="White">
+        <MenuItem Command="ApplicationCommands.Copy">
+            <MenuItem.Style>
+                <Style TargetType="{x:Type MenuItem}">
+                    <Setter Property="Foreground" Value="#000000"></Setter>
+                </Style>
+            </MenuItem.Style>
+        </MenuItem>
+    </ContextMenu>
+
+    <Style x:Key="ReadOnlyTextBoxStyle" TargetType="{x:Type TextBox}">
+        <Setter Property="IsReadOnly" Value="True"></Setter>
+        <Setter Property="BorderThickness" Value="0"></Setter>
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}"></Setter>
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}"></Setter>
+        <Setter Property="ContextMenu" Value="{StaticResource ReadOnlyTextBoxContextMenu}"></Setter>
+    </Style>
+
     <Style x:Key="StashListStyle" TargetType="{x:Type ListBox}">
         <Setter Property="BorderThickness" Value="0"></Setter>
         <Setter Property="Background" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}"></Setter>
