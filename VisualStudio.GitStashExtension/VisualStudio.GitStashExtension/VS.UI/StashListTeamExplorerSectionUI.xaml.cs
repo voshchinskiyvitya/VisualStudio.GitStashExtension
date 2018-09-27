@@ -68,7 +68,12 @@ namespace VisualStudio.GitStashExtension.VS.UI
 
             if (stashId.HasValue)
             {
-                _viewModel.DeleteStash(stashId.Value);
+                var deleteStashPromptResult = MessageBox.Show($"Are you sure you want to delete the stash? {Environment.NewLine}All stashed changes also will be deleted!", 
+                    "Delete stash", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (deleteStashPromptResult == MessageBoxResult.Yes)
+                {
+                    _viewModel.DeleteStash(stashId.Value);
+                }
             }
         }
 
