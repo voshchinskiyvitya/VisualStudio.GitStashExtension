@@ -8,6 +8,7 @@ using VisualStudio.GitStashExtension.Annotations;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TeamFoundation.Git.Extensibility;
 using VisualStudio.GitStashExtension.Extensions;
+using System.Windows.Threading;
 
 namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
 {
@@ -79,8 +80,19 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
 
         private void GitServicePropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
+            var previousValue = IsVisible;
             IsVisible = propertyChangedEventArgs.PropertyName == nameof(_gitService.ActiveRepositories) &&
                         _gitService.AnyActiveRepository();
+
+            // Refresh page only if Stash navigation become visible.
+            if (!previousValue && IsVisible)
+            {
+                Dispatcher.CurrentDispatcher.Invoke(() =>
+                {
+                    if (_teamExplorer.CurrentPage.GetId() == new Guid(Constants.HomePageId))
+                        _teamExplorer.CurrentPage.Refresh();
+                });
+            }
         }
     }
 }
