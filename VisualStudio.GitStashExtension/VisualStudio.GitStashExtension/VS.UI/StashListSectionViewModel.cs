@@ -95,6 +95,22 @@ namespace VisualStudio.GitStashExtension.VS.UI
         }
 
         /// <summary>
+        /// Pops (applies and removes) stash by id.
+        /// </summary>
+        /// <param name="stashId">Stash Id.</param>
+        public void PopStash(int stashId)
+        {
+            if (_gitCommandExecuter.TryPopStash(stashId, out var errorMessage))
+            {
+                _teamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.GitChanges), null);
+            }
+            else
+            {
+                _teamExplorer?.ShowNotification(errorMessage, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
+            }
+        }
+
+        /// <summary>
         /// Removes stash by id.
         /// </summary>
         /// <param name="stashId">Stash Id.</param>

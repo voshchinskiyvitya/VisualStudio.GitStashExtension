@@ -9,6 +9,8 @@
 
         public const string StashApplyFormatted = "stash apply stash@{{{0}}}";
 
+        public const string StashPopFormatted = "stash pop stash@{{{0}}}";
+
         public const string Stash = "stash";
 
         public const string StashIncludeUntracked = "stash --include-untracked";

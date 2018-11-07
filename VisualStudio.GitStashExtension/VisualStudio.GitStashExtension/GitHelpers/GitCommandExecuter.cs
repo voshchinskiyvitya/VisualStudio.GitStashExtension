@@ -61,6 +61,21 @@ namespace VisualStudio.GitStashExtension.GitHelpers
         }
 
         /// <summary>
+        /// Pops stash for the current repository by stash id.
+        /// </summary>
+        /// <param name="stashId">Stash Id.</param>
+        /// <param name="errorMessage">Error message.</param>
+        /// <returns>Bool value that indicates whether command execution was succeeded.</returns>
+        public bool TryPopStash(int stashId, out string errorMessage)
+        {
+            var applyCommand = string.Format(GitCommandConstants.StashPopFormatted, stashId);
+            var commandResult = Execute(applyCommand);
+
+            errorMessage = commandResult.ErrorMessage;
+            return !commandResult.IsError;
+        }
+
+        /// <summary>
         /// Creates stash on current branch.
         /// </summary>
         /// <param name="message">Save message for stash.</param>
