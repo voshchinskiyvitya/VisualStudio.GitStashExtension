@@ -19,6 +19,8 @@ namespace VisualStudio.GitStashExtension
 
         public const string StashInfoChangesSectionId = "43CB2B08-DBEE-4096-B091-EBAE5E2E07D2";
 
+        public const string StashStagedChangesSectionId = "2EA62FC8-499C-415F-A521-DD14DF2D6A4E";
+
         public const string StashesLabel = "Stashes";
 
         public const string StashesInfoLabel = "Stashes Info";

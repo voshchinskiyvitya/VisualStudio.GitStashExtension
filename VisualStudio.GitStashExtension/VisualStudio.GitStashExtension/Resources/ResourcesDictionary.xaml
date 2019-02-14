@@ -1,63 +1,86 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0">
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:VisualStudio.GitStashExtension.Converters"
+    xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0">
 
-    <SolidColorBrush x:Key="ListViewItemSelectedBackgroundColor" Color="#007ACC"/>
-    <SolidColorBrush x:Key="ListViewItemSelectedForegroundColor" Color="#FFFFFF"/>
+    <converters:TextToBoolConverter x:Key="TextToBoolConverter" />
 
-    <SolidColorBrush x:Key="SearchBoxBorderColor" Color="#DBDDE6"/>
-    <SolidColorBrush x:Key="TextBoxBorderColor" Color="#DBDDE6"/>
+    <SolidColorBrush x:Key="ListViewItemSelectedBackgroundColor" Color="#007ACC" />
+    <SolidColorBrush x:Key="ListViewItemSelectedForegroundColor" Color="#FFFFFF" />
+
+    <SolidColorBrush x:Key="SearchBoxBorderColor" Color="#DBDDE6" />
+    <SolidColorBrush x:Key="TextBoxBorderColor" Color="#DBDDE6" />
 
     <Style x:Key="TextBoxStyle" TargetType="{x:Type TextBox}">
-        <Setter Property="BorderThickness" Value="0"></Setter>
-        <Setter Property="Background" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}"></Setter>
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}"></Setter>
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}" />
     </Style>
 
     <ContextMenu x:Key="ReadOnlyTextBoxContextMenu" Background="White">
         <MenuItem Command="ApplicationCommands.Copy">
             <MenuItem.Style>
                 <Style TargetType="{x:Type MenuItem}">
-                    <Setter Property="Foreground" Value="#000000"></Setter>
+                    <Setter Property="Foreground" Value="#000000" />
                 </Style>
             </MenuItem.Style>
         </MenuItem>
     </ContextMenu>
 
     <Style x:Key="ReadOnlyTextBoxStyle" TargetType="{x:Type TextBox}">
-        <Setter Property="IsReadOnly" Value="True"></Setter>
-        <Setter Property="BorderThickness" Value="0"></Setter>
-        <Setter Property="Background" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}"></Setter>
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}"></Setter>
-        <Setter Property="ContextMenu" Value="{StaticResource ReadOnlyTextBoxContextMenu}"></Setter>
+        <Setter Property="IsReadOnly" Value="True" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}" />
+        <Setter Property="ContextMenu" Value="{StaticResource ReadOnlyTextBoxContextMenu}" />
     </Style>
 
     <Style x:Key="StashListStyle" TargetType="{x:Type ListBox}">
-        <Setter Property="BorderThickness" Value="0"></Setter>
-        <Setter Property="Background" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}"></Setter>
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}"></Setter>
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}" />
     </Style>
 
-	<Style x:Key="LabelStyle" TargetType="{x:Type Label}">
-		<Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}"></Setter>
-	</Style>
+    <Style x:Key="LabelStyle" TargetType="{x:Type Label}">
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}" />
+    </Style>
 
-	<Style x:Key="StashListItemStyle" TargetType="{x:Type ListBoxItem}">
+    <Style x:Key="StashListItemStyle" TargetType="{x:Type ListBoxItem}">
         <Style.Triggers>
             <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource ListViewItemSelectedForegroundColor}"></Setter>
+                <Setter Property="Foreground" Value="{StaticResource ListViewItemSelectedForegroundColor}" />
             </Trigger>
         </Style.Triggers>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
                     <Grid>
+                        <Rectangle
+                            x:Name="HoverColorRect"
+                            Fill="{DynamicResource {x:Static vsfx:VsBrushes.CommandBarHoverKey}}"
+                            Opacity="0"
+                            RadiusX="1"
+                            RadiusY="1" />
+                        <Rectangle
+                            x:Name="SelectedColorRect"
+                            Fill="{StaticResource ListViewItemSelectedBackgroundColor}"
+                            Opacity="0"
+                            RadiusX="1"
+                            RadiusY="1" />
+                        <Border Padding="{TemplateBinding Padding}">
+                            <ContentPresenter />
+                        </Border>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal" />
                                 <VisualState x:Name="MouseOver">
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="HoverColorRect" Storyboard.TargetProperty="Opacity" Duration="0" To="1"/>
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="HoverColorRect"
+                                            Storyboard.TargetProperty="Opacity"
+                                            To="1"
+                                            Duration="0" />
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Disabled" />
@@ -66,43 +89,46 @@
                                 <VisualState x:Name="Unselected" />
                                 <VisualState x:Name="Selected">
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="SelectedColorRect" Storyboard.TargetProperty="Opacity" Duration="0" To="1"/>
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="SelectedColorRect"
+                                            Storyboard.TargetProperty="Opacity"
+                                            To="1"
+                                            Duration="0" />
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="SelectedUnfocused">
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="SelectedColorRect" Storyboard.TargetProperty="Opacity" Duration="0" To="1"/>
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="SelectedColorRect"
+                                            Storyboard.TargetProperty="Opacity"
+                                            To="1"
+                                            Duration="0" />
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <Rectangle x:Name="HoverColorRect" Opacity="0" Fill="{DynamicResource {x:Static vsfx:VsBrushes.CommandBarHoverKey}}" RadiusX="1" RadiusY="1"/>
-                        <Rectangle x:Name="SelectedColorRect" Opacity="0" Fill="{StaticResource ListViewItemSelectedBackgroundColor}" RadiusX="1" RadiusY="1"/>
-                        <Border Padding="{TemplateBinding Padding}">
-                            <ContentPresenter />
-                        </Border>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Setter Property="Padding" Value="10 2 0 2"></Setter>
+        <Setter Property="Padding" Value="10,2,0,2" />
     </Style>
 
     <Style x:Key="TeamExplorerTreeViewStyle" TargetType="{x:Type TreeView}">
-        <Setter Property="BorderThickness" Value="0"></Setter>
-        <Setter Property="Background" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}"></Setter>
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}"></Setter>
-        <Setter Property="Margin" Value="0"></Setter>
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}" />
+        <Setter Property="Margin" Value="0" />
     </Style>
 
     <Style x:Key="TeamExplorerTreeViewItemStyle" TargetType="{x:Type TreeViewItem}">
-        <Setter Property="Margin" Value="0 2 0 2"></Setter>
-        <Setter Property="IsExpanded" Value="{Binding IsExpanded}"></Setter>
-        <Setter Property="Background" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}"></Setter>
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}"></Setter>
+        <Setter Property="Margin" Value="0,2,0,2" />
+        <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsFile}" Value="False">
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.CommandBarTextInactiveKey}}"></Setter>
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.CommandBarTextInactiveKey}}" />
             </DataTrigger>
         </Style.Triggers>
         <!--<Setter Property="Template">
@@ -150,15 +176,53 @@
     </Style>
 
     <Style x:Key="ChangedFileContextMenuItemStyle" TargetType="{x:Type MenuItem}">
-        <Setter Property="Foreground" Value="#000000"></Setter>
+        <Setter Property="Foreground" Value="#000000" />
     </Style>
 
     <Style x:Key="ChangedFileContextMenuStyle" TargetType="{x:Type ContextMenu}">
-        <Setter Property="Visibility" Value="Collapsed"></Setter>
-        <Setter Property="ItemContainerStyle" Value="{StaticResource ChangedFileContextMenuItemStyle}"></Setter>
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Setter Property="ItemContainerStyle" Value="{StaticResource ChangedFileContextMenuItemStyle}" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsFile}" Value="True">
-                <Setter Property="Visibility" Value="Visible"></Setter>
+                <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="BlueLinkButtonWithUnderline" TargetType="{x:Type Button}">
+        <Setter Property="Control.Template" Value="{DynamicResource BlueButtonWithUnderlineTemplate}" />
+        <Setter Property="Background" Value="{x:Null}" />
+        <Setter Property="BorderBrush" Value="{x:Null}" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Margin" Value="10,0,0,0" />
+    </Style>
+
+    <ControlTemplate x:Key="BlueButtonWithUnderlineTemplate" TargetType="Button">
+        <TextBlock
+            x:Name="CloseButtonText"
+            Foreground="#FF0097FB"
+            Text="{TemplateBinding Content}" />
+
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Trigger.Setters>
+                    <Setter TargetName="CloseButtonText" Property="TextDecorations" Value="Underline" />
+                    <Setter TargetName="CloseButtonText" Property="Cursor" Value="Hand" />
+                </Trigger.Setters>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style
+        x:Key="CommitTextBoxStyle"
+        BasedOn="{StaticResource TextBoxStyle}"
+        TargetType="{x:Type TextBox}">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Text, RelativeSource={x:Static RelativeSource.Self}, Converter={StaticResource TextToBoolConverter}}" Value="True">
+                <Setter Property="Background" Value="#FFFEFCC8" />
             </DataTrigger>
         </Style.Triggers>
     </Style>
