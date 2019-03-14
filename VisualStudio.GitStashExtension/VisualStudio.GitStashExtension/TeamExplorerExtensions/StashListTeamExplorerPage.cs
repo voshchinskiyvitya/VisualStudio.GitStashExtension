@@ -7,7 +7,7 @@ using VisualStudio.GitStashExtension.VS.UI;
 
 namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
 {
-    [TeamExplorerPage(Constants.StashPageId)]
+    [TeamExplorerPage(Constants.StashPageId, Undockable = true, MultiInstances = false)]
     public class StashListTeamExplorerPage : ITeamExplorerPage
     {
         private readonly IServiceProvider _serviceProvider;
@@ -17,7 +17,7 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
         public StashListTeamExplorerPage([Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-            PageContent = _pageContent = new CreateStashSection(_serviceProvider);
+            PageContent = _pageContent = new CreateStashSection(_serviceProvider);            
         }
 
         public void Dispose()
