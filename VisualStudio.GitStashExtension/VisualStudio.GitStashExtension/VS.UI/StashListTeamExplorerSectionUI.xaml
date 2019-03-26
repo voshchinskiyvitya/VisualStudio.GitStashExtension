@@ -41,6 +41,7 @@
                                 <MenuItem Header="Stash info" Click="StashInfoMenuItem_Click" Tag="{Binding}"></MenuItem>
 							    <Separator></Separator>
                                 <MenuItem Header="Apply stash" Click="ApplyStashMenuItem_Click" Tag="{Binding Id}"></MenuItem>
+                                <MenuItem Header="Pop stash" Click="PopStashMenuItem_Click" Tag="{Binding Id}"></MenuItem>
                                 <MenuItem Header="Delete stash" Click="DeleteStashMenuItem_Click" Tag="{Binding Id}"></MenuItem>
                             </ContextMenu>
 						</TextBlock.ContextMenu>

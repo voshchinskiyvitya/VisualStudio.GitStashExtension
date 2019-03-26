@@ -61,6 +61,22 @@ namespace VisualStudio.GitStashExtension.VS.UI
             }
         }
 
+        private void PopStashMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            var stashId = menuItem.Tag as int?;
+
+            if (stashId.HasValue)
+            {
+                var popStashPromptResult = MessageBox.Show($"Are you sure you want to pop the stash? {Environment.NewLine}All stashed changes will be applied and then deleted!",
+                    "Pop stash", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (popStashPromptResult == MessageBoxResult.Yes)
+                {
+                    _viewModel.PopStash(stashId.Value);
+                }
+            }
+        }
+
         private void DeleteStashMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var menuItem = sender as MenuItem;
