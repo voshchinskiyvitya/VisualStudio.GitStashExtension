@@ -14,7 +14,7 @@ using VisualStudio.GitStashExtension.UI.Commands;
 
 namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
 {
-    [TeamExplorerSection(Constants.StashStagedChangesSectionId, TeamExplorerPageIds.GitChanges, 1)]
+    //[TeamExplorerSection(Constants.StashStagedChangesSectionId, TeamExplorerPageIds.GitChanges, 1)]
     public class StashStagedChangesSection : ITeamExplorerSection
     {
         private readonly ITeamExplorer _teamExplorer;
