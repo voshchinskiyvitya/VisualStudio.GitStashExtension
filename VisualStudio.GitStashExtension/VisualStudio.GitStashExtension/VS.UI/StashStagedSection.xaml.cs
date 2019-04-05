@@ -2,6 +2,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using VisualStudio.GitStashExtension.VS.ViewModels;
 
 namespace VisualStudio.GitStashExtension.VS.UI
 {

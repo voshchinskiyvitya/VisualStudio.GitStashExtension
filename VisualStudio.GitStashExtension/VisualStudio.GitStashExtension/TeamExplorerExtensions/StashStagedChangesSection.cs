@@ -3,21 +3,24 @@ using Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
 using Microsoft.TeamFoundation.Controls.WPF.TeamExplorer.Framework;
 using Microsoft.VisualStudio.Shell;
 using System;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
 using VisualStudio.GitStashExtension.Commands;
 using VisualStudio.GitStashExtension.VS.UI;
 using VisualStudio.GitStashExtension.Extensions;
-using VisualStudio.GitStashExtension.UI.Commands;
+using VisualStudio.GitStashExtension.VS.UI.Commands;
 
 namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
 {
+    /// <summary>
+    /// Section that is responcible for Stash Staged files operation.
+    /// </summary>
     //[TeamExplorerSection(Constants.StashStagedChangesSectionId, TeamExplorerPageIds.GitChanges, 1)]
-    public class StashStagedChangesSection : ITeamExplorerSection
+    public class StashStagedChangesSection : TeamExplorerBase, ITeamExplorerSection
     {
         private readonly ITeamExplorer _teamExplorer;
+        private bool StashStagedLinkInitialized = false;
 
         [ImportingConstructor]
         public StashStagedChangesSection([Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider)
@@ -26,42 +29,29 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
             _teamExplorer = serviceProvider.GetService(typeof(ITeamExplorer)) as ITeamExplorer;
         }
 
-        public string Title => "";
+        #region Section properties
+        public string Title => string.Empty;
 
         public object SectionContent { get; }
 
         private bool _isVisible = false;
         public bool IsVisible
         {
-            get
-            {
-                return _isVisible;
-            }
-            set
-            {
-                _isVisible = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsVisible)));
-            }
+            get => _isVisible;
+            set => SetPropertyValue(value, ref _isVisible);
         }
 
         private bool _isExpanded = true;
         public bool IsExpanded
         {
-            get
-            {
-                return _isExpanded;
-            }
-            set
-            {
-                _isExpanded = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsExpanded)));
-            }
+            get => _isExpanded;
+            set => SetPropertyValue(value, ref _isExpanded);
         }
 
         public bool IsBusy => false;
+        #endregion
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
+        #region Public methods
         public void Cancel()
         {
             IsVisible = false;
@@ -79,8 +69,6 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
         public void Initialize(object sender, SectionInitializeEventArgs e)
         {
         }
-
-        private bool StashStagedLinkInitialized = false;
 
         public void Loaded(object sender, SectionLoadedEventArgs e)
         {
@@ -100,6 +88,7 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
         public void SaveContext(object sender, SectionSaveContextEventArgs e)
         {
         }
+        #endregion
 
         /// <summary>
         /// The approach used below is not appropriate, because I've implemented direct WPF tree code modification.

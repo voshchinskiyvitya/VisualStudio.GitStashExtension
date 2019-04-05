@@ -1,32 +1,33 @@
 ﻿using System;
-using System.ComponentModel;
 using Microsoft.TeamFoundation.Controls;
 using VisualStudio.GitStashExtension.Models;
 using VisualStudio.GitStashExtension.VS.UI;
 
 namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
 {
+    /// <summary>
+    /// Stash information Team explorer page.
+    /// </summary>
     [TeamExplorerPage(Constants.StashInfoPageId)]
-    public class StashInfoTeamExplorerPage: ITeamExplorerPage
+    public class StashInfoTeamExplorerPage: TeamExplorerBase, ITeamExplorerPage
     {
-        private object _pageContent;
         private Stash _stashInfo;
 
+        #region Page properties
+        public string Title => Constants.StashesInfoLabel;
 
-        public StashInfoTeamExplorerPage()
-        {
-        }
+        public object PageContent { get; private set; }
 
-        public void Dispose()
-        {
-        }
+        public bool IsBusy { get; }
+        #endregion
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        #region Public methods
         public void Initialize(object sender, PageInitializeEventArgs e)
         {
-            _pageContent = new StashInfoPage(e.Context as Stash);
-            var changesSection = this.GetSection(new Guid(Constants.StashInfoChangesSectionId));
             _stashInfo = e.Context as Stash;
+            PageContent = new StashInfoPage(_stashInfo);
+
+            var changesSection = this.GetSection(new Guid(Constants.StashInfoChangesSectionId));
             changesSection.SaveContext(this, new SectionSaveContextEventArgs
             {
                 Context = _stashInfo
@@ -52,11 +53,12 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
 
         public object GetExtensibilityService(Type serviceType)
         {
-            return null;
+            throw new NotImplementedException();
         }
 
-        public string Title => Constants.StashesInfoLabel;
-        public object PageContent => _pageContent;
-        public bool IsBusy { get; }
+        public void Dispose()
+        {
+        }
+        #endregion
     }
 }

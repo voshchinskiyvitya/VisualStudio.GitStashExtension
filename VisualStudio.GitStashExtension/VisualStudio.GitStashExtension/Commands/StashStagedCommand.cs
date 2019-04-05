@@ -3,7 +3,7 @@ using System.ComponentModel.Design;
 using System.Windows.Input;
 using Microsoft.TeamFoundation.Controls;
 using Microsoft.VisualStudio.Shell;
-using VisualStudio.GitStashExtension.UI.Commands;
+using VisualStudio.GitStashExtension.VS.UI.Commands;
 using Task = System.Threading.Tasks.Task;
 
 namespace VisualStudio.GitStashExtension.Commands

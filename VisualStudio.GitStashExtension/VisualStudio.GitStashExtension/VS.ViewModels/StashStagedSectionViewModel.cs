@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using VisualStudio.GitStashExtension.Annotations;
 using VisualStudio.GitStashExtension.GitHelpers;
 
-namespace VisualStudio.GitStashExtension.VS.UI
+namespace VisualStudio.GitStashExtension.VS.ViewModels
 {
     public class StashStagedSectionViewModel : INotifyPropertyChanged
     {

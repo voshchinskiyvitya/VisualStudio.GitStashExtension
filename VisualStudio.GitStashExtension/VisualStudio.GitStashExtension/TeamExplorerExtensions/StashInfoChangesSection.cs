@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using Microsoft.TeamFoundation.Controls;
 using Microsoft.VisualStudio.Shell;
@@ -8,10 +7,12 @@ using VisualStudio.GitStashExtension.VS.UI;
 
 namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
 {
+    /// <summary>
+    /// Section that contains information about Stash (name, id, branch, etc.).
+    /// </summary>
     [TeamExplorerSection(Constants.StashInfoChangesSectionId, Constants.StashInfoPageId, 100)]
-    public class StashInfoChangesSection: ITeamExplorerSection
+    public class StashInfoChangesSection: TeamExplorerBase, ITeamExplorerSection
     {
-        private object _sectionContent;
         private readonly IServiceProvider _serviceProvider;
 
         [ImportingConstructor]
@@ -20,11 +21,29 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
             _serviceProvider = serviceProvider;
         }
 
-        public void Dispose()
+        #region Section properties
+        public string Title => Constants.StashesInfoChangesSectionLabel;
+
+        public object SectionContent { get; private set; }
+
+        private bool _isVisible = true;
+        public bool IsVisible
         {
+            get => _isVisible;
+            set => SetPropertyValue(value, ref _isVisible);
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        private bool _isExpanded = true;
+        public bool IsExpanded
+        {
+            get => _isExpanded;
+            set => SetPropertyValue(value, ref _isExpanded);
+        }
+
+        public bool IsBusy => false;
+        #endregion
+
+        #region Public methods
         public void Initialize(object sender, SectionInitializeEventArgs e)
         {
         }
@@ -35,7 +54,7 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
 
         public void SaveContext(object sender, SectionSaveContextEventArgs e)
         {
-            _sectionContent = new StashInfoChangesSectionUI(e.Context as Stash, _serviceProvider);
+            SectionContent = new StashInfoChangesSectionUI(e.Context as Stash, _serviceProvider);
         }
 
         public void Refresh()
@@ -48,40 +67,12 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
 
         public object GetExtensibilityService(Type serviceType)
         {
-            return true;
+            throw new NotImplementedException();
         }
 
-        public string Title => Constants.StashesInfoChangesSectionLabel;
-        public object SectionContent => _sectionContent;
-
-        private bool _isVisible = true;
-        public bool IsVisible
+        public void Dispose()
         {
-            get
-            {
-                return _isVisible;
-            }
-            set
-            {
-                _isVisible = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsVisible)));
-            }
         }
-
-        private bool _isExpanded = true;
-        public bool IsExpanded
-        {
-            get
-            {
-                return _isExpanded;
-            }
-            set
-            {
-                _isExpanded = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsExpanded)));
-            }
-        }
-
-        public bool IsBusy => false;
+        #endregion
     }
 }

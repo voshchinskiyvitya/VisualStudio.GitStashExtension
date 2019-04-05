@@ -61,6 +61,7 @@
     <Compile Include="Extensions\FrameworkElementExtension.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\GitServiceExtension.cs" />
+    <Compile Include="Extensions\TreeNodeExtension.cs" />
     <Compile Include="GitHelpers\GitCommandConstants.cs" />
     <Compile Include="GitHelpers\GitCommandExecuter.cs" />
     <Compile Include="GitHelpers\GitPathHelper.cs" />
@@ -70,8 +71,9 @@
     <Compile Include="Models\FileAttributes.cs" />
     <Compile Include="Models\GitCommandResult.cs" />
     <Compile Include="Models\Stash.cs" />
-    <Compile Include="Models\TreeViewItemWithIcon.cs" />
+    <Compile Include="Models\FilesTreeViewItem.cs" />
     <Compile Include="Models\VsColorTheme.cs" />
+    <Compile Include="NotifyPropertyChangeBase.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources.Designer.cs">
@@ -86,27 +88,30 @@
     <Compile Include="TeamExplorerExtensions\StashListTeamExplorerNavigationItem.cs" />
     <Compile Include="TeamExplorerExtensions\StashListTeamExplorerPage.cs" />
     <Compile Include="TeamExplorerExtensions\StashStagedChangesSection.cs" />
-    <Compile Include="UI.Commands\ToggleStashStagedSectionVisibilityCommand.cs" />
-    <Compile Include="VS.UI\StashStagedSectionViewModel.cs" />
+    <Compile Include="TeamExplorerExtensions\TeamExplorerBase.cs" />
+    <Compile Include="VS.UI.Commands\DelegateCommand.cs" />
+    <Compile Include="VS.UI.Commands\ToggleStashStagedSectionVisibilityCommand.cs" />
+    <Compile Include="VS.ViewModels\StashStagedSectionViewModel.cs" />
     <Compile Include="VS.UI\StashStagedSection.xaml.cs">
       <DependentUpon>StashStagedSection.xaml</DependentUpon>
     </Compile>
     <Compile Include="VS.UI\CreateStashSection.xaml.cs">
       <DependentUpon>CreateStashSection.xaml</DependentUpon>
     </Compile>
-    <Compile Include="VS.UI\CreateStashSetionViewModel.cs" />
+    <Compile Include="VS.ViewModels\CreateStashSectionViewModel.cs" />
     <Compile Include="VS.UI\StashInfoChangesSectionUI.xaml.cs">
       <DependentUpon>StashInfoChangesSectionUI.xaml</DependentUpon>
     </Compile>
-    <Compile Include="VS.UI\StashInfoChangesSectionViewModel.cs" />
+    <Compile Include="VS.ViewModels\StashInfoChangesSectionViewModel.cs" />
     <Compile Include="VS.UI\StashInfoPage.xaml.cs">
       <DependentUpon>StashInfoPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="VS.UI\StashInfoPageViewModel.cs" />
-    <Compile Include="VS.UI\StashListSectionViewModel.cs" />
+    <Compile Include="VS.ViewModels\StashInfoPageViewModel.cs" />
+    <Compile Include="VS.ViewModels\StashListSectionViewModel.cs" />
     <Compile Include="VS.UI\StashListTeamExplorerSectionUI.xaml.cs">
       <DependentUpon>StashListTeamExplorerSectionUI.xaml</DependentUpon>
     </Compile>
+    <Compile Include="VS.ViewModels\TreeViewItemWithIconViewModel.cs" />
     <Compile Include="VSHelpers\VisualStudioPathHelper.cs" />
     <Compile Include="VSHelpers\VisualStudioThemeHelper.cs" />
   </ItemGroup>
@@ -309,6 +314,7 @@
     <Analyzer Include="..\packages\Microsoft.VisualStudio.SDK.Analyzers.15.8.33\analyzers\cs\Microsoft.VisualStudio.SDK.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.15.8.122\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

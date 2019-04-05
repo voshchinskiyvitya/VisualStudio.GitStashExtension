@@ -1,28 +1,62 @@
-﻿<UserControl x:Class="VisualStudio.GitStashExtension.VS.UI.CreateStashSection"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:VisualStudio.GitStashExtension.VS.UI"
-             HorizontalAlignment="Stretch"
-             VerticalAlignment="Stretch"
-             HorizontalContentAlignment="Stretch"
-             VerticalContentAlignment="Stretch"
-             Height="auto"
-             Width="auto">
+﻿<UserControl
+    x:Class="VisualStudio.GitStashExtension.VS.UI.CreateStashSection"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:VisualStudio.GitStashExtension.VS.UI"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Width="auto"
+    Height="auto"
+    HorizontalAlignment="Stretch"
+    VerticalAlignment="Stretch"
+    HorizontalContentAlignment="Stretch"
+    VerticalContentAlignment="Stretch">
 
-	<UserControl.Resources>
-		<ResourceDictionary Source="/VisualStudio.GitStashExtension;component/Resources/ResourcesDictionary.xaml" />
-	</UserControl.Resources>
+    <UserControl.Resources>
+        <ResourceDictionary Source="/VisualStudio.GitStashExtension;component/Resources/ResourcesDictionary.xaml" />
+    </UserControl.Resources>
 
-	<StackPanel Orientation="Vertical" Margin="0 0 0 10">
-		<Border BorderThickness="1" BorderBrush="{StaticResource TextBoxBorderColor}" VerticalAlignment="Top" Margin="15 10 10 10">
-            <TextBox x:Name="MessageTextBox" Text="{Binding Message}" BorderThickness="0" Margin="0 3 0 3" Style="{DynamicResource TextBoxStyle}"></TextBox>
-		</Border>
+    <StackPanel Margin="0,0,0,10" Orientation="Vertical">
+
+        <Border
+            Margin="15,10,10,10"
+            VerticalAlignment="Top"
+            BorderBrush="{StaticResource TextBoxBorderColor}"
+            BorderThickness="1">
+
+            <TextBox
+                x:Name="MessageTextBox"
+                Margin="0,3,0,3"
+                BorderThickness="0"
+                Style="{DynamicResource TextBoxStyle}"
+                Text="{Binding Message}" />
+
+        </Border>
+
         <StackPanel Orientation="Horizontal">
-	        <CheckBox x:Name="IncludeUntrackedFilesCheckbox" IsChecked="{Binding IncludeUntrackedFiles}" Width="auto" Height="Auto" Margin="15 5 5 5" HorizontalAlignment="Left" VerticalAlignment="Center"></CheckBox>
-			<Label Style="{DynamicResource LabelStyle}">Include untracked files</Label>
+
+            <CheckBox
+                x:Name="IncludeUntrackedFilesCheckbox"
+                Width="auto"
+                Height="Auto"
+                Margin="15,5,5,5"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                IsChecked="{Binding IncludeUntrackedFiles}" />
+
+            <Label Style="{DynamicResource LabelStyle}">Include untracked files</Label>
+
         </StackPanel>
-		<Button x:Name="CreateStashButton" Click="CreateStashButton_Click" Content="Create stash" Width="auto" Height="Auto" Padding="5" Margin="15 5 5 5" HorizontalAlignment="Left"></Button>
-	</StackPanel>
+
+        <Button
+            x:Name="CreateStashButton"
+            Width="Auto"
+            Height="Auto"
+            Margin="15,5,5,5"
+            Padding="5"
+            HorizontalAlignment="Left"
+            Command="{Binding CreateStashCommand}"
+            Content="Create stash" />
+
+    </StackPanel>
 </UserControl>

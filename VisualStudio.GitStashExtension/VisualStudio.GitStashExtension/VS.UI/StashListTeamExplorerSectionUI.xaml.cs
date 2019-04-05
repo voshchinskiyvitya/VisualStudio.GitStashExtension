@@ -5,6 +5,7 @@ using System.Windows.Input;
 using Microsoft.TeamFoundation.Controls;
 using VisualStudio.GitStashExtension.GitHelpers;
 using VisualStudio.GitStashExtension.Models;
+using VisualStudio.GitStashExtension.VS.ViewModels;
 
 namespace VisualStudio.GitStashExtension.VS.UI
 {

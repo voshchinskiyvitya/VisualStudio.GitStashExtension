@@ -3,8 +3,6 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using Microsoft.TeamFoundation.Controls;
 using System.Drawing;
-using System.Runtime.CompilerServices;
-using VisualStudio.GitStashExtension.Annotations;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TeamFoundation.Git.Extensibility;
 using VisualStudio.GitStashExtension.Extensions;
@@ -12,8 +10,11 @@ using System.Windows.Threading;
 
 namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
 {
+    /// <summary>
+    /// Git stash navigation item (redirects user to the Git stash page <see cref="StashListTeamExplorerPage"/>).
+    /// </summary>
     [TeamExplorerNavigationItem(Constants.StashNavigationItemId, 1000, TargetPageId = Constants.StashPageId)]
-    public class StashListTeamExplorerNavigationItem : ITeamExplorerNavigationItem2
+    public class StashListTeamExplorerNavigationItem : TeamExplorerBase, ITeamExplorerNavigationItem2
     {
         private readonly ITeamExplorer _teamExplorer;
         private readonly IServiceProvider _serviceProvider;
@@ -24,13 +25,33 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
         {
             _serviceProvider = serviceProvider;
             _teamExplorer = _serviceProvider.GetService(typeof(ITeamExplorer)) as ITeamExplorer;
-            _image = Resources.TeamExplorerIcon;
-            _gitService = (IGitExt)_serviceProvider.GetService(typeof(IGitExt));
+            _gitService = _serviceProvider.GetService(typeof(IGitExt)) as IGitExt;
+            Image = Resources.TeamExplorerIcon;
 
             IsVisible = _gitService.AnyActiveRepository();
             _gitService.PropertyChanged += GitServicePropertyChanged;
         }
 
+        #region Navigation item properties
+        public string Text => Constants.StashesLabel;
+
+        public Image Image { get; }
+
+        private bool _isVisible;
+        public bool IsVisible
+        {
+            get => _isVisible;
+            set => SetPropertyValue(value, ref _isVisible);
+        }
+
+        public bool IsEnabled => true;
+
+        public int ArgbColor => Constants.NavigationItemColorArgbBit;
+
+        public object Icon => null;
+        #endregion
+
+        #region Public methods
         public void Dispose()
         {
         }
@@ -43,41 +64,9 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
         public void Invalidate()
         {
         }
+        #endregion
 
-        public string Text => Constants.StashesLabel;
-
-        private Image _image;
-        private bool _isVisible;
-        public Image Image => _image;
-
-        public bool IsVisible
-        {
-            get => _isVisible;
-            set
-            {
-                _isVisible = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public bool IsEnabled => true;
-        public int ArgbColor => BitConverter.ToInt32(
-            new[] {
-                Constants.NavigationItemColorArgb.B,
-                Constants.NavigationItemColorArgb.G,
-                Constants.NavigationItemColorArgb.R,
-                Constants.NavigationItemColorArgb.A,
-            }, 0);
-
-        public object Icon => null;
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
+        #region Private methods
         private void GitServicePropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
             var previousValue = IsVisible;
@@ -94,5 +83,6 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
                 });
             }
         }
+        #endregion
     }
 }

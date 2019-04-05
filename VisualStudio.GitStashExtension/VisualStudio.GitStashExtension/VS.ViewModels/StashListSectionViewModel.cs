@@ -14,7 +14,7 @@ using VisualStudio.GitStashExtension.GitHelpers;
 using VisualStudio.GitStashExtension.Models;
 using VisualStudio.GitStashExtension.VSHelpers;
 
-namespace VisualStudio.GitStashExtension.VS.UI
+namespace VisualStudio.GitStashExtension.VS.ViewModels
 {
     public class StashListSectionViewModel: INotifyPropertyChanged
     {
