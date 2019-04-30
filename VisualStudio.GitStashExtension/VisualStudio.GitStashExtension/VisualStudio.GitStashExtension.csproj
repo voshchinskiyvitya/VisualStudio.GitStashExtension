@@ -82,6 +82,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\FileIconsService.cs" />
+    <Compile Include="Services\VisualStudioGitService.cs" />
     <Compile Include="TeamExplorerExtensions\GitStashListStashesSection.cs" />
     <Compile Include="TeamExplorerExtensions\StashInfoChangesSection.cs" />
     <Compile Include="TeamExplorerExtensions\StashInfoTeamExplorerPage.cs" />

@@ -19,33 +19,30 @@
             ItemContainerStyle="{DynamicResource TeamExplorerTreeViewItemStyle}"
             ItemsSource="{Binding ChangeItems}"
             PreviewMouseWheel="PreviewMouseWheelForTreeView"
-            Style="{DynamicResource TeamExplorerTreeViewStyle}"
-            TreeViewItem.Collapsed="TreeView_ExpandedOrCollapsed"
-            TreeViewItem.Expanded="TreeView_ExpandedOrCollapsed">
+            Style="{DynamicResource TeamExplorerTreeViewStyle}">
 
             <TreeView.ItemTemplate>
 
                 <HierarchicalDataTemplate DataType="{x:Type models:TreeViewItemWithIconViewModel}" ItemsSource="{Binding Items}">
 
                     <StackPanel Orientation="Horizontal">
+                        <StackPanel.ContextMenu>
+
+                            <ContextMenu Style="{DynamicResource ChangedFileContextMenuStyle}">
+                                <MenuItem
+                                    Command="{Binding CompareWithPreviousVersionCommand}"
+                                    CommandParameter="{Binding}"
+                                    Header="{Binding ContextMenuText}" />
+                            </ContextMenu>
+
+                        </StackPanel.ContextMenu>
 
                         <Image
                             Width="16"
                             Height="16"
                             Source="{Binding Source}" />
 
-                        <TextBlock Margin="5,0,0,0" Text="{Binding Text}">
-                            <TextBlock.ContextMenu>
-
-                                <ContextMenu Style="{DynamicResource ChangedFileContextMenuStyle}">
-                                    <MenuItem
-                                        Click="CompareFileMenuItem_Click"
-                                        Header="{Binding ContextMenuText}"
-                                        Tag="{Binding}" />
-                                </ContextMenu>
-
-                            </TextBlock.ContextMenu>
-                        </TextBlock>
+                        <TextBlock Margin="5,0,0,0" Text="{Binding Text}" />
 
                         <TextBlock Margin="5,0,0,0" Text="[new]">
                             <TextBlock.Style>

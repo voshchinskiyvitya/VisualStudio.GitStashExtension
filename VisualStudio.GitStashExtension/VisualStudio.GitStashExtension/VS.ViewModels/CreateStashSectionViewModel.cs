@@ -1,27 +1,27 @@
-﻿using Microsoft.TeamFoundation.Controls;
-using System;
-using EnvDTE;
-using VisualStudio.GitStashExtension.GitHelpers;
+﻿using System;
 using System.Windows.Input;
 using VisualStudio.GitStashExtension.VS.UI.Commands;
+using VisualStudio.GitStashExtension.Services;
 
 namespace VisualStudio.GitStashExtension.VS.ViewModels
 {
     public class CreateStashSectionViewModel : NotifyPropertyChangeBase
     {
-        private readonly ITeamExplorer _teamExplorer;
-        private readonly IServiceProvider _serviceProvider;
-        private readonly GitCommandExecuter _gitCommandExecuter;
-        private readonly DTE _dte;
+        private readonly VisualStudioGitService _gitService;
 
         public CreateStashSectionViewModel(IServiceProvider serviceProvider)
-        {
-            _serviceProvider = serviceProvider;
-            _teamExplorer = _serviceProvider.GetService(typeof(ITeamExplorer)) as ITeamExplorer;
-            _dte = _serviceProvider.GetService(typeof(DTE)) as DTE;
-            _gitCommandExecuter = new GitCommandExecuter(serviceProvider);
+        {           
+            _gitService = new VisualStudioGitService(serviceProvider);
 
-            CreateStashCommand = new DelegateCommand(o => CreateStash());
+            CreateStashCommand = new DelegateCommand(o => {
+                Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+
+                if (_gitService.TryCreateStash(Message, IncludeUntrackedFiles))
+                {
+                    Message = string.Empty;
+                    IncludeUntrackedFiles = false;
+                }
+            });
         }
 
         #region View Model properties
@@ -49,25 +49,6 @@ namespace VisualStudio.GitStashExtension.VS.ViewModels
         /// Command that executes Create stash operation.
         /// </summary>
         public ICommand CreateStashCommand { get; }
-        #endregion
-
-        #region Private methods
-        private void CreateStash()
-        {
-            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
-
-            var result = _dte.ItemOperations.PromptToSave;
-            if (_gitCommandExecuter.TryCreateStash(_message, _includeUntrackedFiles, out var errorMessage))
-            {
-                _teamExplorer.CurrentPage.RefreshPageAndSections();
-                Message = string.Empty;
-                IncludeUntrackedFiles = false;
-            }
-            else
-            {
-                _teamExplorer?.ShowNotification(errorMessage, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
-            }
-        }
         #endregion
     }
 }

@@ -10,17 +10,19 @@ namespace VisualStudio.GitStashExtension.VS.ViewModels
     {
         private readonly FilesTreeViewItem _internalModel;
         private readonly FileIconsService _fileIconService;
+        private readonly VisualStudioGitService _gitService;
 
-        public TreeViewItemWithIconViewModel(FilesTreeViewItem model, FileIconsService fileIconService)
+        public TreeViewItemWithIconViewModel(FilesTreeViewItem model, FileIconsService fileIconService, VisualStudioGitService gitService)
         {
             _internalModel = model;
             _fileIconService = fileIconService;
+            _gitService = gitService;
 
             Source = IsFile ?
                      _fileIconService.GetFileIcon("." + FileExtension) :
                      _fileIconService.GetFolderIcon(IsExpanded);
 
-            var childNodes = model.Items.Select(m => new TreeViewItemWithIconViewModel(m, fileIconService)).ToList();
+            var childNodes = model.Items.Select(m => new TreeViewItemWithIconViewModel(m, fileIconService, gitService)).ToList();
             Items = new ObservableCollection<TreeViewItemWithIconViewModel>(childNodes);
         }
 
@@ -55,6 +57,11 @@ namespace VisualStudio.GitStashExtension.VS.ViewModels
         /// Child items.
         /// </summary>
         public ObservableCollection<TreeViewItemWithIconViewModel> Items { get; }
+
+        /// <summary>
+        /// Command that will be executed when user selects Compare with previous version option.
+        /// </summary>
+        public ICommand CompareWithPreviousVersionCommand { get; }
         #endregion
 
         #region Properties
