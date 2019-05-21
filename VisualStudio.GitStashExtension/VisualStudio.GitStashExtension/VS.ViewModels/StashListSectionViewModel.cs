@@ -11,6 +11,7 @@ using System.Windows.Media.Imaging;
 using VisualStudio.GitStashExtension.Annotations;
 using VisualStudio.GitStashExtension.Extensions;
 using VisualStudio.GitStashExtension.GitHelpers;
+using VisualStudio.GitStashExtension.Helpers;
 using VisualStudio.GitStashExtension.Models;
 using VisualStudio.GitStashExtension.VSHelpers;
 
@@ -57,6 +58,7 @@ namespace VisualStudio.GitStashExtension.VS.ViewModels
             _gitCommandExecuter = new GitCommandExecuter(serviceProvider);
 
             UpdateStashList(string.Empty);
+            RemovedStashesContainer.ResetContainer();
         }
 
         /// <summary>
@@ -103,6 +105,7 @@ namespace VisualStudio.GitStashExtension.VS.ViewModels
             if (_gitCommandExecuter.TryPopStash(stashId, out var errorMessage))
             {
                 _teamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.GitChanges), null);
+                RemovedStashesContainer.AddDeletedStash(stashId);
             }
             else
             {
@@ -119,6 +122,7 @@ namespace VisualStudio.GitStashExtension.VS.ViewModels
             if (_gitCommandExecuter.TryDeleteStash(stashId, out var errorMessage))
             {
                 _teamExplorer.CurrentPage.RefreshPageAndSections();
+                RemovedStashesContainer.AddDeletedStash(stashId);
             }
             else
             {

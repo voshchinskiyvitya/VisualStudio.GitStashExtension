@@ -49,10 +49,11 @@ namespace VisualStudio.GitStashExtension.VS.UI
             if (stashInfo != null)
             {
                 stash.ChangedFiles = stashInfo.ChangedFiles;
-                var page = _teamExplorer.NavigateToPage(new Guid(Constants.StashInfoPageId), stash) as StashInfoTeamExplorerPage;
+                var stashContext = new StashNavigationContext { Stash = stash, NavigatedDirectly = true };
+                var page = _teamExplorer.NavigateToPage(new Guid(Constants.StashInfoPageId), stashContext) as StashInfoTeamExplorerPage;
                 if(page != null && page.StashId != stash.Id)
                 {
-                    page.Initialize(this, new PageInitializeEventArgs(_serviceProvider, stash));
+                    page.Initialize(this, new PageInitializeEventArgs(_serviceProvider, stashContext));
                 }
             }
         }
