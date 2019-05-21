@@ -11,7 +11,7 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
     /// Section that contains information about Stash (name, id, branch, etc.).
     /// </summary>
     [TeamExplorerSection(Constants.StashInfoChangesSectionId, Constants.StashInfoPageId, 100)]
-    public class StashInfoChangesSection: TeamExplorerBase, ITeamExplorerSection
+    public class StashInfoChangesSection : TeamExplorerBase, ITeamExplorerSection
     {
         private readonly IServiceProvider _serviceProvider;
 
@@ -24,7 +24,12 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
         #region Section properties
         public string Title => Constants.StashesInfoChangesSectionLabel;
 
-        public object SectionContent { get; private set; }
+        private object _sectionContent;
+        public object SectionContent
+        {
+            get => _sectionContent;
+            private set => SetPropertyValue(value, ref _sectionContent);
+        }
 
         private bool _isVisible = true;
         public bool IsVisible

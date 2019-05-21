@@ -3,8 +3,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.TeamFoundation.Controls;
+using Microsoft.TeamFoundation.Controls.WPF.TeamExplorer.Framework;
 using VisualStudio.GitStashExtension.GitHelpers;
 using VisualStudio.GitStashExtension.Models;
+using VisualStudio.GitStashExtension.TeamExplorerExtensions;
 using VisualStudio.GitStashExtension.VS.ViewModels;
 
 namespace VisualStudio.GitStashExtension.VS.UI
@@ -42,7 +44,12 @@ namespace VisualStudio.GitStashExtension.VS.UI
             if (stashInfo != null)
             {
                 stash.ChangedFiles = stashInfo.ChangedFiles;
-                _teamExplorer.NavigateToPage(new Guid(Constants.StashInfoPageId), stash);
+                var stashContext = new StashNavigationContext { Stash = stash, NavigatedDirectly = true };
+                var page = _teamExplorer.NavigateToPage(new Guid(Constants.StashInfoPageId), stashContext) as StashInfoTeamExplorerPage;
+                if(page != null && page.StashId != stash.Id)
+                {
+                    page.Initialize(this, new PageInitializeEventArgs(_serviceProvider, stashContext));
+                }
             }
         }
 

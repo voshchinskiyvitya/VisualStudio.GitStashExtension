@@ -57,6 +57,8 @@
     <Compile Include="Commands\StashStagedCommand.cs" />
     <Compile Include="Commands\StashStagedCommandPackage.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Converters\NullToCollapsedConverter.cs" />
+    <Compile Include="Converters\NullToVisibleConverter.cs" />
     <Compile Include="Converters\TextToBoolConverter.cs" />
     <Compile Include="Extensions\FrameworkElementExtension.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
@@ -66,12 +68,14 @@
     <Compile Include="GitHelpers\GitCommandExecuter.cs" />
     <Compile Include="GitHelpers\GitPathHelper.cs" />
     <Compile Include="GitHelpers\GitResultParser.cs" />
+    <Compile Include="Helpers\RemovedStashesContainer.cs" />
     <Compile Include="Logger\Logger.cs" />
     <Compile Include="Models\ChangedFile.cs" />
     <Compile Include="Models\FileAttributes.cs" />
     <Compile Include="Models\GitCommandResult.cs" />
     <Compile Include="Models\Stash.cs" />
     <Compile Include="Models\FilesTreeViewItem.cs" />
+    <Compile Include="Models\StashNavigationContext.cs" />
     <Compile Include="Models\VsColorTheme.cs" />
     <Compile Include="NotifyPropertyChangeBase.cs" />
     <Compile Include="Properties\Annotations.cs" />
