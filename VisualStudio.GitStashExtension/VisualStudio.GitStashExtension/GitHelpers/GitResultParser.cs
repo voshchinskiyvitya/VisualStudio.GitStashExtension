@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using VisualStudio.GitStashExtension.Models;
 
@@ -18,6 +19,9 @@ namespace VisualStudio.GitStashExtension.GitHelpers
         /// <returns>List of Stash models.</returns>
         public static IList<Stash> ParseStashListResult(string data)
         {
+            var bytes = Encoding.Default.GetBytes(data);
+            data = Encoding.UTF8.GetString(bytes);
+
             var stashesInfo = data.Split('\n')
                 .Where(s => !string.IsNullOrEmpty(s))
                 .ToList();
@@ -64,6 +68,9 @@ namespace VisualStudio.GitStashExtension.GitHelpers
         /// <returns>Stash model.</returns>
         public static Stash ParseStashInfoResult(string data)
         {
+            var bytes = Encoding.Default.GetBytes(data);
+            data = Encoding.UTF8.GetString(bytes);
+
             var filePaths = data.Split('\n')
                 .Where(s => !string.IsNullOrEmpty(s))
                 .ToList();
