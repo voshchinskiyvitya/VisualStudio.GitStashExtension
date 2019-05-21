@@ -30,12 +30,7 @@ namespace VisualStudio.GitStashExtension.VS.UI
         public void Refresh()
         {
             SearchText.Text = string.Empty;
-            _viewModel.UpdateStashList(string.Empty);
-        }
-
-        private void SearchText_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            _viewModel.UpdateStashList(SearchText.Text);
+            _viewModel.SearchText = string.Empty;
         }
 
         private void StashInfoMenuItem_Click(object sender, RoutedEventArgs e)

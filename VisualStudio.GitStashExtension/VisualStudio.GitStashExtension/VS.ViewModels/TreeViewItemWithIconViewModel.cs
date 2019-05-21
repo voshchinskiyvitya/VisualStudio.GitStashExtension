@@ -1,8 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using VisualStudio.GitStashExtension.Models;
 using VisualStudio.GitStashExtension.Services;
+using VisualStudio.GitStashExtension.VS.UI.Commands;
 
 namespace VisualStudio.GitStashExtension.VS.ViewModels
 {
@@ -12,7 +14,7 @@ namespace VisualStudio.GitStashExtension.VS.ViewModels
         private readonly FileIconsService _fileIconService;
         private readonly VisualStudioGitService _gitService;
 
-        public TreeViewItemWithIconViewModel(FilesTreeViewItem model, FileIconsService fileIconService, VisualStudioGitService gitService)
+        public TreeViewItemWithIconViewModel(FilesTreeViewItem model, int stashId, FileIconsService fileIconService, VisualStudioGitService gitService)
         {
             _internalModel = model;
             _fileIconService = fileIconService;
@@ -22,8 +24,19 @@ namespace VisualStudio.GitStashExtension.VS.ViewModels
                      _fileIconService.GetFileIcon("." + FileExtension) :
                      _fileIconService.GetFolderIcon(IsExpanded);
 
-            var childNodes = model.Items.Select(m => new TreeViewItemWithIconViewModel(m, fileIconService, gitService)).ToList();
+            var childNodes = model.Items.Select(m => new TreeViewItemWithIconViewModel(m, stashId, fileIconService, gitService)).ToList();
             Items = new ObservableCollection<TreeViewItemWithIconViewModel>(childNodes);
+
+            CompareWithPreviousVersionCommand = new DelegateCommand(o =>
+            {
+                var treeItem = o as TreeViewItemWithIconViewModel;
+                var filePath = treeItem?.FullPath;
+                var fileName = treeItem?.Text;
+                var isNew = treeItem?.IsNew ?? false;
+                var isStaged = treeItem?.IsStaged ?? false;
+
+                _gitService.RunDiff(stashId, filePath, fileName, isNew, isStaged);
+            });
         }
 
         #region View Model properties

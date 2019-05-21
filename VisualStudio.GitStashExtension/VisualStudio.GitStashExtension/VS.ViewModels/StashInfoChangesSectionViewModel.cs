@@ -26,19 +26,9 @@ namespace VisualStudio.GitStashExtension.VS.ViewModels
             var fileIconsService = new FileIconsService(vsImageService);
 
             var rootTreeViewItem = stash.ChangedFiles.ToTreeViewItemStructure();
-            var rootViewModel = new TreeViewItemWithIconViewModel(rootTreeViewItem, fileIconsService, _gitService);
+            var rootViewModel = new TreeViewItemWithIconViewModel(rootTreeViewItem, stash.Id, fileIconsService, _gitService);
 
             ChangeItems = rootViewModel.Items;
-            CompareWithPreviousVersionCommand = new DelegateCommand(o =>
-            {
-                var treeItem = o as FilesTreeViewItem;
-                var filePath = treeItem?.FullPath;
-                var fileName = treeItem?.Text;
-                var isNew = treeItem?.IsNew ?? false;
-                var isStaged = treeItem?.IsStaged ?? false;
-
-                _gitService.RunDiff(stash.Id, filePath, fileName, isNew, isStaged);
-            });
         }
 
         /// <summary>

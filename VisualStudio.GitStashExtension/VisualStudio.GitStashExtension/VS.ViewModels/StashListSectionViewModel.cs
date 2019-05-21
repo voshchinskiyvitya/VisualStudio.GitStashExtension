@@ -6,31 +6,54 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using VisualStudio.GitStashExtension.Annotations;
 using VisualStudio.GitStashExtension.Extensions;
 using VisualStudio.GitStashExtension.GitHelpers;
 using VisualStudio.GitStashExtension.Models;
+using VisualStudio.GitStashExtension.VS.UI.Commands;
 using VisualStudio.GitStashExtension.VSHelpers;
 
 namespace VisualStudio.GitStashExtension.VS.ViewModels
 {
-    public class StashListSectionViewModel: INotifyPropertyChanged
+    public class StashListSectionViewModel : NotifyPropertyChangeBase
     {
         private readonly ITeamExplorer _teamExplorer;
         private readonly IServiceProvider _serviceProvider;
         private readonly GitCommandExecuter _gitCommandExecuter;
-        private ObservableCollection<Stash> _stashList = new ObservableCollection<Stash>();
 
+        public StashListSectionViewModel(IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+            _teamExplorer = _serviceProvider.GetService(typeof(ITeamExplorer)) as ITeamExplorer;
+            _gitCommandExecuter = new GitCommandExecuter(serviceProvider);
+
+            UpdateStashList(string.Empty);
+
+            PropertyChanged += (e, s) =>
+            {
+                if (s.PropertyName == nameof(SearchText))
+                {
+                    UpdateStashList(SearchText);
+                }
+            };
+        }
+
+        #region View Model properties
+        private ObservableCollection<Stash> _stashList = new ObservableCollection<Stash>();
         public ObservableCollection<Stash> Stashes
         {
             get => _stashList;
-            set
-            {
-                _stashList = value;
-                OnPropertyChanged();
-            }
+            set => SetPropertyValue(value, ref _stashList);
+        }
+
+        private string _searchText;
+        public string SearchText
+        {
+            get => _searchText;
+            set => SetPropertyValue(value, ref _searchText);
         }
 
         public ImageSource SearchIconSource
@@ -48,22 +71,33 @@ namespace VisualStudio.GitStashExtension.VS.ViewModels
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        #endregion
 
-        public StashListSectionViewModel(IServiceProvider serviceProvider)
-        {
-            _serviceProvider = serviceProvider;
-            _teamExplorer = _serviceProvider.GetService(typeof(ITeamExplorer)) as ITeamExplorer;
-            _gitCommandExecuter = new GitCommandExecuter(serviceProvider);
+        #region Commands
 
-            UpdateStashList(string.Empty);
-        }
+        /// <summary>
+        /// Applies stash to current repository state.
+        /// </summary>
+        public ICommand ApplyStashCommand => new DelegateCommand(o => ApplyStash((int)o));
 
+        /// <summary>
+        /// Pops (applies and removes) stash.
+        /// </summary>
+        public ICommand PopStashCommand => new DelegateCommand(o => PopStash((int)o));
+
+        /// <summary>
+        /// Removes stash.
+        /// </summary>
+        public ICommand DeleteStashCommand => new DelegateCommand(o => DeleteStash((int)o));
+
+        #endregion
+
+        #region Private methods
         /// <summary>
         /// Updates stash list content based on search text.
         /// </summary>
         /// <param name="searchText">Search text.</param>
-        public void UpdateStashList(string searchText)
+        private void UpdateStashList(string searchText)
         {
             Task.Run(() =>
             {
@@ -82,7 +116,7 @@ namespace VisualStudio.GitStashExtension.VS.ViewModels
         /// Applies stash to current repository state.
         /// </summary>
         /// <param name="stashId">Stash Id.</param>
-        public void ApplyStash(int stashId)
+        private void ApplyStash(int stashId)
         {
             if (_gitCommandExecuter.TryApplyStash(stashId, out var errorMessage))
             {
@@ -98,7 +132,7 @@ namespace VisualStudio.GitStashExtension.VS.ViewModels
         /// Pops (applies and removes) stash by id.
         /// </summary>
         /// <param name="stashId">Stash Id.</param>
-        public void PopStash(int stashId)
+        private void PopStash(int stashId)
         {
             if (_gitCommandExecuter.TryPopStash(stashId, out var errorMessage))
             {
@@ -114,7 +148,7 @@ namespace VisualStudio.GitStashExtension.VS.ViewModels
         /// Removes stash by id.
         /// </summary>
         /// <param name="stashId">Stash Id.</param>
-        public void DeleteStash(int stashId)
+        private void DeleteStash(int stashId)
         {
             if (_gitCommandExecuter.TryDeleteStash(stashId, out var errorMessage))
             {
@@ -133,17 +167,12 @@ namespace VisualStudio.GitStashExtension.VS.ViewModels
         public Stash GetStashInfo(int stashId)
         {
             if (!_gitCommandExecuter.TryGetStashInfo(stashId, out var stash, out var errorMessage))
-            { 
+            {
                 _teamExplorer?.ShowNotification(errorMessage, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
             }
 
             return stash;
         }
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        #endregion
     }
 }
