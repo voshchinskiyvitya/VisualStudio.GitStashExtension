@@ -16,7 +16,7 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
     /// <summary>
     /// Section that is responcible for Stash Staged files operation.
     /// </summary>
-    //[TeamExplorerSection(Constants.StashStagedChangesSectionId, TeamExplorerPageIds.GitChanges, 1)]
+    [TeamExplorerSection(Constants.StashStagedChangesSectionId, TeamExplorerPageIds.GitChanges, 1)]
     public class StashStagedChangesSection : TeamExplorerBase, ITeamExplorerSection
     {
         private readonly ITeamExplorer _teamExplorer;

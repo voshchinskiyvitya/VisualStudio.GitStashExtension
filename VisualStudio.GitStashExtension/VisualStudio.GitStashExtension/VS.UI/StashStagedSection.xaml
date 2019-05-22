@@ -36,11 +36,11 @@
                 Height="Auto"
                 Padding="0,1,0,1"
                 HorizontalAlignment="Left"
-                Click="CreateStashButton_Click"
+                Command="{Binding StashStagedCommand}"
                 Content="Create stash" />
             <Button
                 Margin="10,5,0,0"
-                Click="CloseSectionLink_Click"
+                Command="{Binding CancelCommand}"
                 Style="{StaticResource BlueLinkButtonWithUnderline}">
                 Close
             </Button>

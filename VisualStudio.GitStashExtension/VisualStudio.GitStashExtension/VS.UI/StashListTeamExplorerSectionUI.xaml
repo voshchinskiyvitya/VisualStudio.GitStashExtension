@@ -29,7 +29,7 @@
                     Margin="0,3,18,3"
                     BorderThickness="0"
                     Style="{DynamicResource TextBoxStyle}"
-                    Text="{Binding SearchText, Mode=OneWay}" />
+                    Text="{Binding SearchText, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
                 <Image
                     Width="16"
                     Height="16"

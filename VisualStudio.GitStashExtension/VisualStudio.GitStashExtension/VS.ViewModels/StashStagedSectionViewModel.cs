@@ -1,60 +1,51 @@
 ﻿using Microsoft.TeamFoundation.Controls;
 using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using VisualStudio.GitStashExtension.Annotations;
-using VisualStudio.GitStashExtension.GitHelpers;
+using System.Windows.Input;
+using VisualStudio.GitStashExtension.Services;
+using VisualStudio.GitStashExtension.VS.UI.Commands;
 
 namespace VisualStudio.GitStashExtension.VS.ViewModels
 {
-    public class StashStagedSectionViewModel : INotifyPropertyChanged
+    public class StashStagedSectionViewModel : NotifyPropertyChangeBase
     {
         private readonly ITeamExplorer _teamExplorer;
         private readonly IServiceProvider _serviceProvider;
-        private readonly GitCommandExecuter _gitCommandExecuter;
+        private readonly VisualStudioGitService _gitService;
+        private readonly ITeamExplorerSection _section;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public StashStagedSectionViewModel(IServiceProvider serviceProvider, ITeamExplorerSection section)
+        {
+            _serviceProvider = serviceProvider;
+            _section = section;
+            _teamExplorer = _serviceProvider.GetService(typeof(ITeamExplorer)) as ITeamExplorer;
+            _gitService = new VisualStudioGitService(serviceProvider);
+        }
 
         private string _message;
         public string Message
         {
-            get
+            get => _message;
+            set => SetPropertyValue(value, ref _message);
+        }
+
+        /// <summary>
+        /// Stash staged command.
+        /// </summary>
+        public ICommand StashStagedCommand => new DelegateCommand(o =>
+        {
+            if (_gitService.TryCreateStashStaged(Message))
             {
-                return _message;
+                Message = string.Empty;
             }
-            set
-            {
-                _message = value;
-                OnPropertyChanged();
-            }
-        }
+        });
 
-        public StashStagedSectionViewModel(IServiceProvider serviceProvider)
+        /// <summary>
+        /// Cancel stash staged command.
+        /// </summary>
+        public ICommand CancelCommand => new DelegateCommand(o =>
         {
-            _serviceProvider = serviceProvider;
-            _teamExplorer = _serviceProvider.GetService(typeof(ITeamExplorer)) as ITeamExplorer;
-            _gitCommandExecuter = new GitCommandExecuter(serviceProvider);
-        }
-
-        public void CreateStash()
-        {
-            //Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
-            //var result =_dte.ItemOperations.PromptToSave;
-            //if (_gitCommandExecuter.TryCreateStash(_message, true, out var errorMessage))
-            //{
-            //    _teamExplorer.CurrentPage.RefreshPageAndSections();
-            //    Message = string.Empty;
-            //}
-            //else
-            //{
-            //    _teamExplorer?.ShowNotification(errorMessage, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
-            //}
-        }
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+            Message = string.Empty;
+            _section.Cancel();
+        });
     }
 }

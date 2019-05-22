@@ -106,6 +106,19 @@ namespace VisualStudio.GitStashExtension.GitHelpers
         }
 
         /// <summary>
+        /// Creates stash on current branch and keeps index state.
+        /// </summary>
+        /// <param name="errorMessage">Error message.</param>
+        /// <returns>Bool value that indicates whether command execution was succeeded.</returns>
+        public bool TryCreateStashKeepIndex(out string errorMessage)
+        {
+            var commandResult = Execute(GitCommandConstants.StashKeepIndex);
+
+            errorMessage = commandResult.ErrorMessage;
+            return !commandResult.IsError;
+        }
+
+        /// <summary>
         /// Delete stash by id.
         /// </summary>
         /// <param name="id">Stash id.</param>
