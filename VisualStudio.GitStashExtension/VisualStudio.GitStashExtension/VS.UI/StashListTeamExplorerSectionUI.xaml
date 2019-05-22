@@ -1,53 +1,72 @@
-﻿<UserControl x:Class="VisualStudio.GitStashExtension.VS.UI.StashListTeamExplorerSectionUI"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:VisualStudio.GitStashExtension.VS.UI"
-             xmlns:models="clr-namespace:VisualStudio.GitStashExtension.Models"
-             HorizontalAlignment="Stretch"
-             VerticalAlignment="Stretch"
-             HorizontalContentAlignment="Stretch"
-             VerticalContentAlignment="Stretch"
-             Height="auto"
-             Width="auto">
-    
+﻿<UserControl
+    x:Class="VisualStudio.GitStashExtension.VS.UI.StashListTeamExplorerSectionUI"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:VisualStudio.GitStashExtension.VS.UI"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="clr-namespace:VisualStudio.GitStashExtension.Models"
+    Width="auto"
+    Height="auto"
+    HorizontalAlignment="Stretch"
+    VerticalAlignment="Stretch"
+    HorizontalContentAlignment="Stretch"
+    VerticalContentAlignment="Stretch">
+
     <UserControl.Resources>
         <ResourceDictionary Source="/VisualStudio.GitStashExtension;component/Resources/ResourcesDictionary.xaml" />
     </UserControl.Resources>
 
-	<StackPanel Orientation="Vertical">
-		<Border BorderThickness="1" BorderBrush="{StaticResource SearchBoxBorderColor}" VerticalAlignment="Top" Margin="5 10 10 10">
-			<Grid>
-                <TextBox x:Name="SearchText" BorderThickness="0" Margin="0 3 18 3" Text="{Binding SearchText, Mode=OneWay}" Style="{DynamicResource TextBoxStyle}"></TextBox>
-                <Image HorizontalAlignment="Right" Source="{Binding SearchIconSource}" Height="16" Width="16" Margin="2 3 3 2"></Image>
-			</Grid>
-		</Border>
-		
-		
-		<ListBox Name="StashesList" 
-                 Margin="5,5,10,20" 
-                 ItemsSource="{Binding Stashes}" 
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-				 Style="{DynamicResource StashListStyle}"
-                 ItemContainerStyle="{StaticResource StashListItemStyle}"
-                 PreviewMouseWheel="PreviewMouseWheelForListView">
+    <StackPanel Orientation="Vertical">
+        <Border
+            Margin="5,10,10,10"
+            VerticalAlignment="Top"
+            BorderBrush="{StaticResource SearchBoxBorderColor}"
+            BorderThickness="1">
+            <Grid>
+                <TextBox
+                    x:Name="SearchText"
+                    Margin="0,3,18,3"
+                    BorderThickness="0"
+                    Style="{DynamicResource TextBoxStyle}"
+                    Text="{Binding SearchText, Mode=OneWay}" />
+                <Image
+                    Width="16"
+                    Height="16"
+                    Margin="2,3,3,2"
+                    HorizontalAlignment="Right"
+                    Source="{Binding SearchIconSource}" />
+            </Grid>
+        </Border>
 
-			<ListBox.ItemTemplate>
-				<DataTemplate>
-					<TextBlock Text="{Binding Message}" MouseDown="ListItem_MouseDown" Tag="{Binding}">
-						<TextBlock.ContextMenu>
-							<ContextMenu>
-                                <MenuItem Header="Stash info" Command="{Binding DataContext.ApplyStashCommand, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}}}" Tag="{Binding}"></MenuItem>
-							    <Separator></Separator>
-                                <MenuItem Header="Apply stash" Click="ApplyStashMenuItem_Click" Tag="{Binding Id}"></MenuItem>
-                                <MenuItem Header="Pop stash" Click="PopStashMenuItem_Click" Tag="{Binding Id}"></MenuItem>
-                                <MenuItem Header="Delete stash" Click="DeleteStashMenuItem_Click" Tag="{Binding Id}"></MenuItem>
+
+        <ListBox
+            Name="StashesList"
+            Margin="5,5,10,20"
+            ItemContainerStyle="{StaticResource StashListItemStyle}"
+            ItemsSource="{Binding Stashes}"
+            PreviewMouseWheel="PreviewMouseWheelForListView"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            Style="{DynamicResource StashListStyle}">
+
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Message}">
+                        <TextBlock.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Command="{Binding OpenStashInfoCommand}" Header="Stash info" />
+                                <Separator />
+                                <MenuItem Command="{Binding ApplyStashCommand}" Header="Apply stash" />
+                                <MenuItem Command="{Binding PopStashCommand}" Header="Pop stash" />
+                                <MenuItem Command="{Binding DeleteStashCommand}" Header="Delete stash" />
                             </ContextMenu>
-						</TextBlock.ContextMenu>
-					</TextBlock>
-				</DataTemplate>
-			</ListBox.ItemTemplate>
+                        </TextBlock.ContextMenu>
+                        <TextBlock.InputBindings>
+                            <MouseBinding Command="{Binding OpenStashInfoCommand}" Gesture="LeftDoubleClick" />
+                        </TextBlock.InputBindings>
+                    </TextBlock>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
         </ListBox>
     </StackPanel>
 </UserControl>

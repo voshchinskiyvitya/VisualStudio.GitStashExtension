@@ -96,6 +96,7 @@
     <Compile Include="TeamExplorerExtensions\TeamExplorerBase.cs" />
     <Compile Include="VS.UI.Commands\DelegateCommand.cs" />
     <Compile Include="VS.UI.Commands\ToggleStashStagedSectionVisibilityCommand.cs" />
+    <Compile Include="VS.ViewModels\StashListItemViewModel.cs" />
     <Compile Include="VS.ViewModels\StashStagedSectionViewModel.cs" />
     <Compile Include="VS.UI\StashStagedSection.xaml.cs">
       <DependentUpon>StashStagedSection.xaml</DependentUpon>

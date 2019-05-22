@@ -3,6 +3,7 @@ using Microsoft.TeamFoundation.Controls;
 using VisualStudio.GitStashExtension.Helpers;
 using VisualStudio.GitStashExtension.Models;
 using VisualStudio.GitStashExtension.VS.UI;
+using VisualStudio.GitStashExtension.VS.ViewModels;
 
 namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
 {
@@ -74,6 +75,11 @@ namespace VisualStudio.GitStashExtension.TeamExplorerExtensions
 
         public void Dispose()
         {
+        }
+
+        internal void Initialize(StashListItemViewModel stashListItemViewModel, PageInitializeEventArgs pageInitializeEventArgs)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

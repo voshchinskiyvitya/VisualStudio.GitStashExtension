@@ -2,8 +2,12 @@
 using Microsoft.TeamFoundation.Controls;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using VisualStudio.GitStashExtension.GitHelpers;
+using VisualStudio.GitStashExtension.Helpers;
+using VisualStudio.GitStashExtension.Models;
 using Log = VisualStudio.GitStashExtension.Logger.Logger;
 
 namespace VisualStudio.GitStashExtension.Services
@@ -123,6 +127,85 @@ namespace VisualStudio.GitStashExtension.Services
                 File.Delete(beforeTempPath);
                 File.Delete(afterTempPath);
             }
+        }
+
+        /// <summary>
+        /// Get stash list content based on search text.
+        /// </summary>
+        /// <param name="searchText">Search text.</param>
+        public IList<Stash> GetAllStashes(string searchText)
+        {
+            if (_gitCommandExecuter.TryGetAllStashes(out var stashes, out var error))
+            {
+                return stashes.Where(s => string.IsNullOrEmpty(searchText) || s.Message.Contains(searchText)).ToList();
+            }
+
+            _teamExplorer?.ShowNotification(error, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
+            return new List<Stash>();
+        }
+
+        /// <summary>
+        /// Applies stash to current repository state.
+        /// </summary>
+        /// <param name="stashId">Stash Id.</param>
+        public void ApplyStash(int stashId)
+        {
+            if (_gitCommandExecuter.TryApplyStash(stashId, out var errorMessage))
+            {
+                _teamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.GitChanges), null);
+            }
+            else
+            {
+                _teamExplorer?.ShowNotification(errorMessage, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
+            }
+        }
+
+        /// <summary>
+        /// Pops (applies and removes) stash by id.
+        /// </summary>
+        /// <param name="stashId">Stash Id.</param>
+        public void PopStash(int stashId)
+        {
+            if (_gitCommandExecuter.TryPopStash(stashId, out var errorMessage))
+            {
+                _teamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.GitChanges), null);
+                RemovedStashesContainer.AddDeletedStash(stashId);
+            }
+            else
+            {
+                _teamExplorer?.ShowNotification(errorMessage, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
+            }
+        }
+
+        /// <summary>
+        /// Removes stash by id.
+        /// </summary>
+        /// <param name="stashId">Stash Id.</param>
+        public void DeleteStash(int stashId)
+        {
+            if (_gitCommandExecuter.TryDeleteStash(stashId, out var errorMessage))
+            {
+                _teamExplorer.CurrentPage.RefreshPageAndSections();
+                RemovedStashesContainer.AddDeletedStash(stashId);
+            }
+            else
+            {
+                _teamExplorer?.ShowNotification(errorMessage, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
+            }
+        }
+
+        /// <summary>
+        /// Gets stash info by id.
+        /// </summary>
+        /// <param name="stashId">Stash Id.</param>
+        public Stash GetStashInfo(int stashId)
+        {
+            if (!_gitCommandExecuter.TryGetStashInfo(stashId, out var stash, out var errorMessage))
+            {
+                _teamExplorer?.ShowNotification(errorMessage, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
+            }
+
+            return stash;
         }
     }
 }

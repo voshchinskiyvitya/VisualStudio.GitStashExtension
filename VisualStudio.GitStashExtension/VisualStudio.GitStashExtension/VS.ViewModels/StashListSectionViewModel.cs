@@ -1,20 +1,16 @@
 ﻿using Microsoft.TeamFoundation.Controls;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using VisualStudio.GitStashExtension.Annotations;
 using VisualStudio.GitStashExtension.Extensions;
 using VisualStudio.GitStashExtension.GitHelpers;
 using VisualStudio.GitStashExtension.Helpers;
 using VisualStudio.GitStashExtension.Models;
-using VisualStudio.GitStashExtension.VS.UI.Commands;
+using VisualStudio.GitStashExtension.Services;
 using VisualStudio.GitStashExtension.VSHelpers;
 
 namespace VisualStudio.GitStashExtension.VS.ViewModels
@@ -24,12 +20,14 @@ namespace VisualStudio.GitStashExtension.VS.ViewModels
         private readonly ITeamExplorer _teamExplorer;
         private readonly IServiceProvider _serviceProvider;
         private readonly GitCommandExecuter _gitCommandExecuter;
+        private readonly VisualStudioGitService _gitService;
 
         public StashListSectionViewModel(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
             _teamExplorer = _serviceProvider.GetService(typeof(ITeamExplorer)) as ITeamExplorer;
             _gitCommandExecuter = new GitCommandExecuter(serviceProvider);
+            _gitService = new VisualStudioGitService(_serviceProvider);
 
             UpdateStashList(string.Empty);
             RemovedStashesContainer.ResetContainer();
@@ -44,8 +42,8 @@ namespace VisualStudio.GitStashExtension.VS.ViewModels
         }
 
         #region View Model properties
-        private ObservableCollection<Stash> _stashList = new ObservableCollection<Stash>();
-        public ObservableCollection<Stash> Stashes
+        private ObservableCollection<StashListItemViewModel> _stashList = new ObservableCollection<StashListItemViewModel>();
+        public ObservableCollection<StashListItemViewModel> Stashes
         {
             get => _stashList;
             set => SetPropertyValue(value, ref _stashList);
@@ -75,25 +73,6 @@ namespace VisualStudio.GitStashExtension.VS.ViewModels
 
         #endregion
 
-        #region Commands
-
-        /// <summary>
-        /// Applies stash to current repository state.
-        /// </summary>
-        public ICommand ApplyStashCommand => new DelegateCommand(o => ApplyStash((int)o));
-
-        /// <summary>
-        /// Pops (applies and removes) stash.
-        /// </summary>
-        public ICommand PopStashCommand => new DelegateCommand(o => PopStash((int)o));
-
-        /// <summary>
-        /// Removes stash.
-        /// </summary>
-        public ICommand DeleteStashCommand => new DelegateCommand(o => DeleteStash((int)o));
-
-        #endregion
-
         #region Private methods
         /// <summary>
         /// Updates stash list content based on search text.
@@ -103,80 +82,12 @@ namespace VisualStudio.GitStashExtension.VS.ViewModels
         {
             Task.Run(() =>
             {
-                if (_gitCommandExecuter.TryGetAllStashes(out var stashes, out var error))
-                {
-                    Stashes = stashes.Where(s => string.IsNullOrEmpty(searchText) || s.Message.Contains(searchText)).ToObservableCollection();
-                }
-                else
-                {
-                    _teamExplorer?.ShowNotification(error, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
-                }
+                Stashes = _gitService
+                    .GetAllStashes(searchText)
+                    .Select(s => new StashListItemViewModel(s, _serviceProvider))
+                    .ToObservableCollection();             
             });
-        }
-
-        /// <summary>
-        /// Applies stash to current repository state.
-        /// </summary>
-        /// <param name="stashId">Stash Id.</param>
-        private void ApplyStash(int stashId)
-        {
-            if (_gitCommandExecuter.TryApplyStash(stashId, out var errorMessage))
-            {
-                _teamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.GitChanges), null);
-            }
-            else
-            {
-                _teamExplorer?.ShowNotification(errorMessage, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
-            }
-        }
-
-        /// <summary>
-        /// Pops (applies and removes) stash by id.
-        /// </summary>
-        /// <param name="stashId">Stash Id.</param>
-        private void PopStash(int stashId)
-        {
-            if (_gitCommandExecuter.TryPopStash(stashId, out var errorMessage))
-            {
-                _teamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.GitChanges), null);
-                RemovedStashesContainer.AddDeletedStash(stashId);
-            }
-            else
-            {
-                _teamExplorer?.ShowNotification(errorMessage, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
-            }
-        }
-
-        /// <summary>
-        /// Removes stash by id.
-        /// </summary>
-        /// <param name="stashId">Stash Id.</param>
-        private void DeleteStash(int stashId)
-        {
-            if (_gitCommandExecuter.TryDeleteStash(stashId, out var errorMessage))
-            {
-                _teamExplorer.CurrentPage.RefreshPageAndSections();
-                RemovedStashesContainer.AddDeletedStash(stashId);
-            }
-            else
-            {
-                _teamExplorer?.ShowNotification(errorMessage, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
-            }
-        }
-
-        /// <summary>
-        /// Gets stash info by id.
-        /// </summary>
-        /// <param name="stashId">Stash Id.</param>
-        public Stash GetStashInfo(int stashId)
-        {
-            if (!_gitCommandExecuter.TryGetStashInfo(stashId, out var stash, out var errorMessage))
-            {
-                _teamExplorer?.ShowNotification(errorMessage, NotificationType.Error, NotificationFlags.None, null, Guid.NewGuid());
-            }
-
-            return stash;
-        }
+        }        
         #endregion
     }
 }
