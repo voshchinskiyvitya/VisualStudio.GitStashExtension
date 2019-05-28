@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace VisualStudio.GitStashExtension
 {
@@ -31,11 +32,19 @@ namespace VisualStudio.GitStashExtension
 
         public static Color NavigationItemColorArgb = Color.FromArgb(0, 213, 66);  // green
 
+        public static int NavigationItemColorArgbBit = BitConverter.ToInt32(
+            new[] {
+                NavigationItemColorArgb.B,
+                NavigationItemColorArgb.G,
+                NavigationItemColorArgb.R,
+                NavigationItemColorArgb.A,
+            }, 0);
+
         public static Color BlueThemeColor = Color.FromArgb(255, 236, 181);
 
         public static Color LightThemeColor = Color.FromArgb(238, 238, 242);  
 
-        public static Color DarkThemeColor = Color.FromArgb(45, 45, 48);  
+        public static Color DarkThemeColor = Color.FromArgb(45, 45, 48);
 
         public const string UnknownRepositoryErrorMessage = "Select repository to find stashes.";
 

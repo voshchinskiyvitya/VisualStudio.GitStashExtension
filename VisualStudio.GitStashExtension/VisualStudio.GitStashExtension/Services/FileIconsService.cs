@@ -7,6 +7,9 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 namespace VisualStudio.GitStashExtension.Services
 {
+    /// <summary>
+    /// File icon service for fetching Visual Studio file icons.
+    /// </summary>
     public class FileIconsService
     {
         private readonly IVsImageService2 _vsImageService;
@@ -16,12 +19,20 @@ namespace VisualStudio.GitStashExtension.Services
             _vsImageService = vsImageService;
         }
 
+        /// <summary>
+        /// Returns visual studio file icon.
+        /// </summary>
+        /// <param name="fileExtension">File extension (.cs, .txt, etc.).</param>
         public BitmapSource GetFileIcon(string fileExtension)
         {
             var image = _vsImageService.GetIconForFileEx(fileExtension, __VSUIDATAFORMAT.VSDF_WPF, out var _) as WpfPropertyValue;
             return image?.Value as BitmapSource;
         }
 
+        /// <summary>
+        /// Returns visual studio foder icon.
+        /// </summary>
+        /// <param name="isExpanded">Parameter indicates that flder is expanded or not.</param>
         public BitmapSource GetFolderIcon(bool isExpanded)
         {
             var folderImageMoniker = isExpanded ? KnownMonikers.FolderOpened : KnownMonikers.FolderClosed;

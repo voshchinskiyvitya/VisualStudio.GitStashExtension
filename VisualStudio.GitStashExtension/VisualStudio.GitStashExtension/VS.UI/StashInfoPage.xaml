@@ -1,32 +1,55 @@
-﻿<UserControl x:Class="VisualStudio.GitStashExtension.VS.UI.StashInfoPage"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:VisualStudio.GitStashExtension.VS.UI"
-             HorizontalAlignment="Stretch"
-             VerticalAlignment="Stretch"
-             HorizontalContentAlignment="Stretch"
-             VerticalContentAlignment="Stretch"
-             Height="auto"
-             Width="auto">
-    
+﻿<UserControl
+    x:Class="VisualStudio.GitStashExtension.VS.UI.StashInfoPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:VisualStudio.GitStashExtension.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:VisualStudio.GitStashExtension.VS.UI"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Width="auto"
+    Height="auto"
+    HorizontalAlignment="Stretch"
+    VerticalAlignment="Stretch"
+    HorizontalContentAlignment="Stretch"
+    VerticalContentAlignment="Stretch">
+
     <UserControl.Resources>
-        <ResourceDictionary Source="/VisualStudio.GitStashExtension;component/Resources/ResourcesDictionary.xaml" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/VisualStudio.GitStashExtension;component/Resources/ResourcesDictionary.xaml" />
+                <ResourceDictionary>
+                    <converters:NullToCollapsedConverter x:Key="NullToCollapsedConverter" />
+                    <converters:NullToVisibleConverter x:Key="NullToVisibleConverter" />
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
-    
-    <StackPanel Margin="15 10 0 10" Orientation="Vertical">
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Text="Stash #" FontSize="22" FontWeight="Bold"></TextBlock>
-            <TextBlock Text="{Binding Stash.Id}" FontSize="22" FontWeight="Bold"></TextBlock>
+
+    <StackPanel Margin="15,10,0,10" Orientation="Vertical">
+        <StackPanel Visibility="{Binding Stash, Converter={StaticResource NullToCollapsedConverter}}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock
+                    FontSize="22"
+                    FontWeight="Bold"
+                    Text="Stash #" />
+                <TextBlock
+                    FontSize="22"
+                    FontWeight="Bold"
+                    Text="{Binding Stash.Id}" />
+            </StackPanel>
+            <TextBox
+                Margin="0,10,0,10"
+                FontSize="18"
+                Style="{DynamicResource ReadOnlyTextBoxStyle}"
+                Text="{Binding Stash.Message}" />
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="On branch: " />
+                <TextBox Style="{DynamicResource ReadOnlyTextBoxStyle}" Text="{Binding Stash.BranchName}" />
+                <StackPanel.ToolTip>
+                    <TextBlock Text="{Binding Stash.BranchName}" />
+                </StackPanel.ToolTip>
+            </StackPanel>
         </StackPanel>
-        <TextBox Text="{Binding Stash.Message}" Margin="0 10 0 10" FontSize="18" Style="{DynamicResource ReadOnlyTextBoxStyle}"></TextBox>
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Text="On branch: "></TextBlock>
-            <TextBox Text="{Binding Stash.BranchName}" Style="{DynamicResource ReadOnlyTextBoxStyle}"></TextBox>
-            <StackPanel.ToolTip>
-                <TextBlock Text="{Binding Stash.BranchName}"></TextBlock>
-            </StackPanel.ToolTip>
-        </StackPanel>
+        <TextBlock Foreground="Red" Visibility="{Binding Stash, Converter={StaticResource NullToVisibleConverter}}">An error occurred during page loading, this stash was deleted.</TextBlock>
     </StackPanel>
 </UserControl>

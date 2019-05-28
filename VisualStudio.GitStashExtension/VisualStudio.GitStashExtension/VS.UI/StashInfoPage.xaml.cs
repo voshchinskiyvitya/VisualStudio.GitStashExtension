@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls;
 using VisualStudio.GitStashExtension.Models;
+using VisualStudio.GitStashExtension.VS.ViewModels;
 
 namespace VisualStudio.GitStashExtension.VS.UI
 {

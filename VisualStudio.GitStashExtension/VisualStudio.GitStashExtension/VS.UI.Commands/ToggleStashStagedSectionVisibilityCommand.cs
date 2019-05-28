@@ -2,7 +2,7 @@
 using System;
 using System.Windows.Input;
 
-namespace VisualStudio.GitStashExtension.UI.Commands
+namespace VisualStudio.GitStashExtension.VS.UI.Commands
 {
     /// <summary>
     /// Command fot toggling stash staged section visibility.
