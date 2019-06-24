@@ -73,6 +73,16 @@ namespace VisualStudio.GitStashExtension.VS.ViewModels
 
         #endregion
 
+        #region Public methods
+        /// <summary>
+        /// Refreshes stash list content.
+        /// </summary>
+        public void RefreshList()
+        {
+            UpdateStashList(string.Empty);
+        }
+        #endregion
+
         #region Private methods
         /// <summary>
         /// Updates stash list content based on search text.

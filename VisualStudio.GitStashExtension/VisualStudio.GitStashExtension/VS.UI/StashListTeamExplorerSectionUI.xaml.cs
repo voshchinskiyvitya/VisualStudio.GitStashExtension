@@ -28,6 +28,7 @@ namespace VisualStudio.GitStashExtension.VS.UI
         public void Refresh()
         {
             _viewModel.SearchText = string.Empty;
+            _viewModel.RefreshList();
         }
 
         private void PreviewMouseWheelForListView(object sender, MouseWheelEventArgs e)
